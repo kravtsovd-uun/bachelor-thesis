@@ -1,6 +1,6 @@
 <script>
 	import '../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Avatar } from '@skeletonlabs/skeleton';
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -21,6 +21,15 @@
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+
+	export let data;
+
+	function processUserInitials() {
+		const credentials = data.user.name;
+		const spaceIdx = credentials.indexOf(' ');
+
+		return credentials.charAt(0) + credentials.charAt(spaceIdx + 1);
+	}
 </script>
 
 <!-- App Shell -->
@@ -32,30 +41,13 @@
 				<strong class="text-xl uppercase">UUN LMS by Kravtsov D.</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://discord.gg/EXqV7W8MtY"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Discord
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://twitter.com/SkeletonUI"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Twitter
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://github.com/skeletonlabs/skeleton"
-					target="_blank"
-					rel="noreferrer"
-				>
-					GitHub
-				</a>
+				{#if data?.user}
+					<Avatar
+						initials={processUserInitials()}
+						background="bg-primary-500"
+						class="w-10"
+					/>
+				{/if}
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
