@@ -10,13 +10,13 @@
 	<div class="mt-6 w-full max-w-sm rounded-lg bg-primary-50 py-6 shadow-md">
 		<form method="POST" action="?/login" class="flex w-full flex-col items-center space-y-2">
 			<div class="form-control w-full max-w-xs">
-				<label for="email" class="label pb-1 font-medium">
+				<label for="email" class="label pb-1 font-medium text-black">
 					<span class="label-text">Email</span>
 				</label>
 				<input type="email" name="email" class="input-bordered input w-full max-w-xs" />
 			</div>
 			<div class="form-control w-full max-w-xs">
-				<label for="password" class="label pb-1 font-medium">
+				<label for="password" class="label pb-1 font-medium text-black">
 					<span class="label-text">Heslo</span>
 				</label>
 				<input type="password" name="password" class="input-bordered input w-full max-w-xs" />

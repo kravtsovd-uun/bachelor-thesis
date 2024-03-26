@@ -42,7 +42,7 @@
 			</div>
 		</form>
 	</div>
-	<div class="mt-36 w-full max-w-sm rounded-lg bg-primary-50 p-6">
+	<div class="mt-16 w-full max-w-sm rounded-lg bg-primary-50 p-6">
 		<h3 class="h3 font-bold text-primary-900">Pozor</h3>
 		<hr class="my-2" />
 		<p class="text-primary-800">
