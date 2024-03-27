@@ -39,8 +39,9 @@
 				{#if data?.user}
 					<Avatar
 						initials={processUserInitials(data?.user?.name)}
+						src={data?.avatarSrc}
 						background="bg-primary-500"
-						class="w-10"
+						class="w-11"
 					/>
 				{/if}
 			</svelte:fragment>
