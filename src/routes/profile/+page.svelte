@@ -25,14 +25,22 @@
 			name="avatar"
 			button="btn variant-filled-primary"
 			class="mt-4"
-			accept="image/*"
+			accept="image/jpeg, image/png, image/webp"
+			id="avatar-preview-input"
 			bind:files={avatarFiles}
 			on:change={() => {
-				document.getElementById('avatar-preview').src = avatarSrc;
+				//restrict to 2MB file size
+				if (avatarFiles[0].size > 2097152) {
+					alert('Velikost nahrávaného obrázku nesmí přesáhnout 2MB');
+					avatarSrc = '';
+					avatarFiles = [];
+					document.getElementById('avatar-preview-input').value = '';
+				} else {
+					document.getElementById('avatar-preview').src = avatarSrc;
+				}
 			}}>Nahrát</FileButton
 		>
 		<input type="text" value={data?.user?.name} name="name" class="text-black" />
-		<button class="variant-ghost-error btn mt-4 w-32"> Smazat </button>
 		<button class="variant-filled-success btn mt-4 w-32" type="submit">Aktualizovat</button>
 	</form>
 </main>

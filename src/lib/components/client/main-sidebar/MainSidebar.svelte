@@ -1,5 +1,8 @@
 <aside>
 	<div class="variant-filled btn-group-vertical">
+		<a href="/" role="button" class="variant-filled btn" data-sveltekit-preload-data="hover"
+			>Rozvrh</a
+		>
 		<a href="/profile" role="button" class="variant-filled btn" data-sveltekit-preload-data="hover"
 			>Profil</a
 		>

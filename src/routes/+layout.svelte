@@ -20,9 +20,10 @@
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
+	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+
 	import MainSidebar from '$lib/components/client/main-sidebar/MainSidebar.svelte';
 	import { processUserInitials } from '$lib/serviceFunctions.js';
-	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	export let data;
 </script>
@@ -41,7 +42,7 @@
 						initials={processUserInitials(data?.user?.name)}
 						src={data?.avatarSrc}
 						background="bg-primary-500"
-						class="w-11"
+						class="w-10"
 					/>
 				{/if}
 			</svelte:fragment>
