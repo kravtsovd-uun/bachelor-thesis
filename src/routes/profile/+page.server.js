@@ -15,7 +15,6 @@ export const actions = {
 		const dataHaveChanged = data.avatar.size > 0 || data.name !== locals.user.name;
 
 		if (dataHaveChanged) {
-			console.log('Data have changed');
 			try {
 				const { name, avatar } = await locals.pb.collection('users').update(locals?.user?.id, data);
 				locals.user.name = name;

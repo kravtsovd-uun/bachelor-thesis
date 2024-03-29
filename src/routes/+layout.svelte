@@ -1,7 +1,20 @@
 <script>
 	import '../app.postcss';
-	import { AppShell, AppBar, Avatar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Avatar, LightSwitch } from '@skeletonlabs/skeleton';
 
+	//Dynamic progress bar above the page during page load
+	import 'nprogress/nprogress.css';
+	import NProgress from 'nprogress';
+	import { navigating } from '$app/stores';
+
+	NProgress.configure({ minimum: 0.16, showSpinner: false });
+	$: {
+		if ($navigating) {
+			NProgress.start();
+		} else {
+			NProgress.done();
+		}
+	}
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
 	import 'highlight.js/styles/github-dark.css';
@@ -37,6 +50,7 @@
 				<strong class="text-xl uppercase">UUN LMS by Kravtsov D.</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
+				<LightSwitch />
 				{#if data?.user}
 					<Avatar
 						initials={processUserInitials(data?.user?.name)}
