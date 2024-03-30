@@ -1,5 +1,5 @@
 <script>
-	import { addDays } from 'date-fns';
+	import { addDays, format } from 'date-fns';
 
 	import { formatDashboardDate } from '$lib/serviceFunctions.js';
 	import { Paginator } from '@skeletonlabs/skeleton';
@@ -40,6 +40,30 @@
 		updatedUserTRData = result;
 		isFetchPending = false;
 	}
+
+	// Group user's time records by date
+	// Object with keys as unique sorted formatted days. Each key contains related time record which belongs to that day
+	// e.g.: {"30.3.2025": [{...record1Data}, {...record2Data}], ...}
+	$: groupedUserTimeRecords = data.userTimeRecords.items.reduce((acc, record) => {
+		const date = new Date(record.dateFrom).toLocaleDateString('cs-CZ', {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'numeric',
+			day: 'numeric'
+		}); //Format time record date
+		if (!acc[date]) {
+			acc[date] = [];
+		}
+		acc[date].push(record);
+		return acc;
+	}, {});
+
+	const today = new Date().toLocaleDateString('cs-CZ', {
+		weekday: 'long',
+		year: 'numeric',
+		month: 'numeric',
+		day: 'numeric'
+	});
 </script>
 
 <main class="p-4">
@@ -52,7 +76,7 @@
 		on:page={onPageChange}
 		disabled={isFetchPending}
 	/>
-	<section class="flex flex-wrap gap-6">
+	<section class="mt-8 flex flex-col space-y-16">
 		{#key updatedUserTRData}
 			{#if isFetchPending}
 				<section class="card mt-4 w-full">
@@ -73,19 +97,32 @@
 					</div>
 				</section>
 			{:else}
-				{#each updatedUserTRData?.items ?? data?.userTimeRecords.items as userTimeRecord, i}
-					<TimeRecordCard
-						groupName={userTimeRecord.expand.group.name}
-						groupStudentCount={userTimeRecord.expand.group.max_students_count}
-						groupStudentAgeFrom={userTimeRecord.expand.group.ageFrom}
-						groupStudentAgeTo={userTimeRecord.expand.group.ageTo}
-						room={userTimeRecord.room}
-						date={userTimeRecord.dateFrom}
-						schoolName={userTimeRecord.expand.school.name}
-						timeFrom={userTimeRecord.dateFrom}
-						timeTo={userTimeRecord.dateTo}
-						notPrimarySchool={data?.user.employee_of[0] !== userTimeRecord.expand.school.id}
-					/>
+				{#each Object.entries(groupedUserTimeRecords) as [date, records]}
+					<div class="flex w-full flex-col space-y-4">
+						<h2 class="h2">
+							{#if date === today}
+								Dnes <small class="text-sm">({date})</small>
+							{:else}
+								{date}
+							{/if}
+						</h2>
+						<div class="flex flex-wrap gap-6">
+							{#each records as record}
+								<TimeRecordCard
+									groupName={record.expand.group.name}
+									groupStudentCount={record.expand.group.max_students_count}
+									groupStudentAgeFrom={record.expand.group.ageFrom}
+									groupStudentAgeTo={record.expand.group.ageTo}
+									room={record.room}
+									date={record.dateFrom}
+									schoolName={record.expand.school.name}
+									timeFrom={record.dateFrom}
+									timeTo={record.dateTo}
+									notPrimarySchool={data?.user.employee_of[0] !== record.expand.school.id}
+								/>
+							{/each}
+						</div>
+					</div>
 				{/each}
 			{/if}
 		{/key}

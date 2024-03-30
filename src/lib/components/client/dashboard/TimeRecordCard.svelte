@@ -23,15 +23,15 @@
 >
 	<header class="card-header p-2">
 		<div class="flex w-full justify-between">
-			<div class="flex flex-col">
+			<div class="text-surface-900-50-token flex flex-col">
 				<h3 class="h3">{groupName}</h3>
-				<h4 class="h4">
+				<h6 class="h6">
 					{new Date(date).toLocaleString('cs-CZ', {
 						year: 'numeric',
 						month: 'numeric',
 						day: 'numeric'
 					})}
-				</h4>
+				</h6>
 			</div>
 
 			<!-- <Avatar initials="PP" background="bg-surface-400-500-token" width="w-12" class="h-12" /> -->
@@ -61,7 +61,7 @@
 				initials={schoolName}
 				background="bg-surface-400-500-token"
 				width="w-10"
-				class="h-10 border-2 border-warning-300-600-token"
+				class="border-warning-300-600-token h-10 border-2"
 			/>
 			<h5 class="text-surface-400-500-token h5">{schoolName}</h5>
 		</div>
