@@ -3,6 +3,7 @@
 
 	import { formatDashboardDate } from '$lib/serviceFunctions.js';
 	import { Paginator } from '@skeletonlabs/skeleton';
+	import TimeRecordCard from '$lib/components/client/dashboard/TimeRecordCard.svelte';
 
 	function _processDays() {
 		let daysDuration = 7; // 1 week
@@ -51,7 +52,7 @@
 		on:page={onPageChange}
 		disabled={isFetchPending}
 	/>
-	<section class="flex flex-wrap gap-8">
+	<section class="flex flex-wrap gap-6">
 		{#key updatedUserTRData}
 			{#if isFetchPending}
 				<section class="card mt-4 w-full">
@@ -73,30 +74,16 @@
 				</section>
 			{:else}
 				{#each updatedUserTRData?.items ?? data?.userTimeRecords.items as userTimeRecord, i}
-					<div class="mt-4 rounded-lg bg-surface-500 p-4 text-2xl font-bold text-surface-200">
-						<div>
-							Od: {new Date(userTimeRecord.dateFrom).toLocaleString('cs-CZ', {
-								year: 'numeric',
-								month: 'numeric',
-								day: 'numeric',
-								hour: '2-digit',
-								minute: '2-digit'
-							})}
-						</div>
-						<div>
-							Do: {new Date(userTimeRecord.dateTo).toLocaleString('cs-CZ', {
-								year: 'numeric',
-								month: 'numeric',
-								day: 'numeric',
-								hour: '2-digit',
-								minute: '2-digit'
-							})}
-						</div>
-						<div>Resitel: {userTimeRecord.expand.teacher.name}</div>
-						<div>Škola: {userTimeRecord.expand.school.name}</div>
-						<div>Skupina: {userTimeRecord.expand.group.name}</div>
-						<div>Místnost: {userTimeRecord.room}</div>
-					</div>
+					<TimeRecordCard
+						groupName={userTimeRecord.expand.group.name}
+						groupStudentCount={userTimeRecord.expand.group.max_students_count}
+						groupStudentAgeFrom={userTimeRecord.expand.group.ageFrom}
+						groupStudentAgeTo={userTimeRecord.expand.group.ageTo}
+						date={userTimeRecord.dateFrom}
+						schoolName={userTimeRecord.expand.school.name}
+						timeFrom={userTimeRecord.dateFrom}
+						timeTo={userTimeRecord.dateTo}
+					/>
 				{/each}
 			{/if}
 		{/key}
