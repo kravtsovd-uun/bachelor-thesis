@@ -6,8 +6,9 @@ export async function GET({ url, locals }) {
 
 	const res = await locals.pb.collection('time_records').getList(page, perPage, {
 		expand: 'teacher, school, group',
-		fields: '*, expand.teacher.name, expand.school.name, expand.group.name',
-        sort: 'dateFrom'
+		fields: '*, expand.teacher.name, expand.school.name, expand.school.id, expand.group.name',
+		filter: 'dateFrom > @todayStart',
+		sort: 'dateFrom'
 	});
 
 	return json(res);

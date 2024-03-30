@@ -3,12 +3,14 @@
 	export let groupStudentCount = 15;
 	export let groupStudentAgeFrom = 16;
 	export let groupStudentAgeTo;
+	export let room = 'Recepce';
 	export let date = '2024-03-30';
 	export let teacherAvatar = '';
 	export let schoolAvatar = '';
 	export let schoolName = 'Jaška';
 	export let timeFrom = '2024-03-30T09:00:00.000Z';
 	export let timeTo = '2024-03-30T10:30:00.000Z';
+	export let notPrimarySchool = false;
 
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import { isPast as checkPast, subMinutes } from 'date-fns';
@@ -16,7 +18,9 @@
 	let isLessThanHour = !isPast && checkPast(subMinutes(timeFrom, 60));
 </script>
 
-<div class={`card min-w-80 max-w-80 flex-1 ${isPast && 'opacity-40'}`}>
+<div
+	class={`card min-w-80 max-w-80 flex-1 ${isPast && 'opacity-40'} ${notPrimarySchool && 'variant-ghost-secondary'}`}
+>
 	<header class="card-header p-2">
 		<div class="flex w-full justify-between">
 			<div class="flex flex-col">
@@ -29,7 +33,8 @@
 					})}
 				</h4>
 			</div>
-			<Avatar initials="PP" background="bg-surface-400-500-token" width="w-12" class="h-12" />
+
+			<!-- <Avatar initials="PP" background="bg-surface-400-500-token" width="w-12" class="h-12" /> -->
 		</div>
 	</header>
 	<hr />
@@ -56,12 +61,14 @@
 				initials={schoolName}
 				background="bg-surface-400-500-token"
 				width="w-10"
-				class="h-10"
+				class="h-10 border-2 border-warning-300-600-token"
 			/>
-			<h5 class="text-primary-300-600-token h5">{schoolName}</h5>
+			<h5 class="text-surface-400-500-token h5">{schoolName}</h5>
 		</div>
 		{#if isLessThanHour}
 			<span class="variant-ghost-error badge">Méně než za 1 hodinu</span>
+		{:else}
+			<p class="my-auto font-thin">{room}</p>
 		{/if}
 	</footer>
 </div>

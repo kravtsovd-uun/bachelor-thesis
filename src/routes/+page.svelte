@@ -79,10 +79,12 @@
 						groupStudentCount={userTimeRecord.expand.group.max_students_count}
 						groupStudentAgeFrom={userTimeRecord.expand.group.ageFrom}
 						groupStudentAgeTo={userTimeRecord.expand.group.ageTo}
+						room={userTimeRecord.room}
 						date={userTimeRecord.dateFrom}
 						schoolName={userTimeRecord.expand.school.name}
 						timeFrom={userTimeRecord.dateFrom}
 						timeTo={userTimeRecord.dateTo}
+						notPrimarySchool={data?.user.employee_of[0] !== userTimeRecord.expand.school.id}
 					/>
 				{/each}
 			{/if}
