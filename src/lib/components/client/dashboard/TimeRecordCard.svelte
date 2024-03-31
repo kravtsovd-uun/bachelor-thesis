@@ -27,7 +27,7 @@
 </script>
 
 <div
-	class={`card variant-ghost-primary min-w-80 max-w-80 flex-1 ${isPast && 'opacity-40'} ${notPrimarySchool && 'variant-ghost-secondary'}`}
+	class={`card variant-ghost-primary min-w-80 max-w-80 flex-1 ${isPast && 'opacity-40'} ${notPrimarySchool && 'variant-ghost-secondary'} rounded-md shadow-md dark:shadow-none`}
 >
 	<header class="card-header p-2">
 		<div class="flex w-full justify-between">
@@ -45,7 +45,7 @@
 			<!-- <Avatar initials="PP" background="bg-surface-400-500-token" width="w-12" class="h-12" /> -->
 		</div>
 	</header>
-	<hr />
+	<hr class="!border-surface-400-500-token mx-2 rounded-md !border-2" />
 	<section class="p-2">
 		<div class="flex flex-col">
 			<div class="flex w-full justify-around">
@@ -62,7 +62,7 @@
 			</div>
 		</div>
 	</section>
-	<hr />
+	<hr class="!border-surface-400-500-token mx-2 rounded-md !border-2" />
 	<footer class="card-footer flex justify-between p-2">
 		<div class="flex items-center gap-2">
 			<Avatar

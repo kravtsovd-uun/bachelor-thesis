@@ -1,10 +1,24 @@
 <script>
-	import { addDays, format } from 'date-fns';
-
+	import { addDays } from 'date-fns';
+	import { superForm } from 'sveltekit-superforms';
 	import { formatDashboardDate } from '$lib/serviceFunctions.js';
 	import { Paginator } from '@skeletonlabs/skeleton';
 	import TimeRecordCard from '$lib/components/client/dashboard/TimeRecordCard.svelte';
 	import NoDataThumbnail from '$lib/components/client/dashboard/NoDataThumbnail.svelte';
+	import TestModalForm from '$lib/components/client/TestModalForm.svelte';
+
+	import { getModalStore } from '@skeletonlabs/skeleton';
+
+	const modalStore = getModalStore();
+	const formModalComponent = { ref: TestModalForm };
+
+	const testModal = {
+		type: 'component',
+		component: formModalComponent,
+		// Data
+		title: 'Testovací formulář',
+		body: 'Toto je testovací formulář'
+	};
 
 	function _processDays() {
 		let daysDuration = 7; // 1 week
@@ -79,10 +93,22 @@
 		month: 'numeric',
 		day: 'numeric'
 	});
+
+	const { form } = superForm(data.testForm);
 </script>
 
 <main class="p-4">
-	<h1 class="text-surface-700-200-token h1 font-bold">Agenda</h1>
+	<div class="flex justify-between">
+		<h1 class="text-surface-700-200-token h1 font-bold">Agenda</h1>
+		{#if data?.user.role === 'school'}
+			<div
+				class="variant-ghost-success btn-group rounded-md font-bold opacity-50 transition-opacity duration-300 hover:opacity-100"
+			>
+				<button>Vytvořit skupinu</button>
+				<button on:click={() => modalStore.trigger(testModal)}>Vytvořit nabídku</button>
+			</div>
+		{/if}
+	</div>
 	{#if data?.userTimeRecords.items.length === 0}
 		<NoDataThumbnail userRole={data?.user.role} />
 	{:else}

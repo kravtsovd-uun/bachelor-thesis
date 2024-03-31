@@ -15,6 +15,12 @@
 			NProgress.done();
 		}
 	}
+
+	//Initialize dynamic components stores, like modals, toasts, drawers etc.
+	import { Modal as FormModal } from '@skeletonlabs/skeleton';
+	import { initializeStores } from '@skeletonlabs/skeleton';
+	initializeStores();
+
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
 	import 'highlight.js/styles/github-dark.css';
@@ -41,6 +47,7 @@
 	export let data;
 </script>
 
+<FormModal />
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
