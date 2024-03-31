@@ -56,7 +56,8 @@
 						initials={processUserInitials(data?.user?.name)}
 						src={data?.avatarSrc}
 						background="bg-primary-500"
-						class="w-10"
+						class="border-surface-600-300-token w-10 border-2 hover:!border-primary-500"
+						cursor="cursor-pointer"
 					/>
 				{/if}
 			</svelte:fragment>
