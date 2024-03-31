@@ -86,14 +86,17 @@
 	{#if data?.userTimeRecords.items.length === 0}
 		<NoDataThumbnail userRole={data?.user.role} />
 	{:else}
-		<Paginator
-			settings={paginationSettings}
-			showNumerals
-			maxNumerals={3}
-			class="mt-4 max-w-xs"
-			on:page={onPageChange}
-			disabled={isFetchPending}
-		/>
+		<!--If fetched records count is less than pagination minimum dispay option - paginator isn't shown-->
+		{#if paginationSettings.size > paginationSettings.amounts[0]}
+			<Paginator
+				settings={paginationSettings}
+				showNumerals
+				maxNumerals={3}
+				class="mt-4 max-w-xs"
+				on:page={onPageChange}
+				disabled={isFetchPending}
+			/>
+		{/if}
 		<section class="mt-8 flex flex-col space-y-16">
 			{#key updatedUserTRData}
 				{#if isFetchPending}

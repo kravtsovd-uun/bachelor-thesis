@@ -2,7 +2,8 @@ export function processUserInitials(credentials) {
 	if (!credentials) {
 		return 'AA';
 	}
-	const spaceIdx = credentials.indexOf(' ');
+	let spaceIdx = credentials.indexOf(' ');
+	spaceIdx = spaceIdx > -1 ? spaceIdx : 0; //In case there is only one word in credentials
 
 	return credentials.charAt(0) + credentials.charAt(spaceIdx + 1);
 }
