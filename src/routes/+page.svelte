@@ -25,7 +25,10 @@
 		enhance
 	};
 
-	const formModalComponent = { ref: TestModalForm, props: { formProps: formProps } };
+	const formModalComponent = {
+		ref: TestModalForm,
+		props: { formProps: formProps, study_groups: data?.study_groups }
+	};
 
 	const testModal = {
 		type: 'component',

@@ -4,6 +4,7 @@
 	const modalStore = getModalStore();
 
 	export let formProps;
+	export let study_groups = [{ id: '0', name: 'Žádné studijní skupiny' }];
 
 	const { form, errors, constraints, message, enhance } = formProps;
 </script>
@@ -17,19 +18,21 @@
 		<article>{$modalStore[0].body ?? '(Žádné tělo formuláře)'}</article>
 		<form method="POST" action="/" use:enhance class="space-y-4 border border-surface-500 p-4">
 			<label class="label">
-				<span>School</span>
-				<input
-					class="input"
-					type="text"
-					name="school"
-					aria-invalid={$errors.school ? 'true' : undefined}
-					placeholder="Enter school ID"
-					bind:value={$form.school}
-					{...$constraints.school}
-				/>
+				<span>Studijní skupina</span>
+				<select
+					class="select"
+					bind:value={$form.group}
+					name="group"
+					aria-invalid={$errors.group ? true : undefined}
+					{...$constraints.group}
+				>
+					{#each study_groups as { id, name }, i}
+						<option value={id}>{name}</option>
+					{/each}
+				</select>
 			</label>
 
-			<label class="label">
+			<!-- <label class="label">
 				<span>Group</span>
 				<input
 					class="input"
@@ -40,7 +43,7 @@
 					bind:value={$form.group}
 					{...$constraints.group}
 				/>
-			</label>
+			</label> -->
 
 			<label class="label">
 				<span>dateFrom</span>

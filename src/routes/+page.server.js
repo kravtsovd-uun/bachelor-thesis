@@ -4,10 +4,16 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
 import { startOfToday } from 'date-fns';
 
+async function loadAvailableStudyGroups(db) {
+	const result = await db
+		.collection('study_groups')
+		.getFullList({ skipTotal: true, sorted: 'created', filter: 'active=true', fields: 'id,name' });
+	return result;
+}
+
 // Defined outside the load function so the adapter can be cached
 const utrCreateSchema = z.object({
-	school: z.string().regex(/([a-z0-9]{15})+/),
-	group: z.string().regex(/([a-z0-9]{15})+/),
+	group: z.string().regex(/([a-z0-9]{15})+/, 'Must be exactly 15 symbols'),
 	dateFrom: z.coerce
 		.date()
 		.min(new Date('2024-01-01'), { message: 'Datum od nemůže být starší 2024-01-01 ' }),
@@ -30,8 +36,11 @@ export const load = async ({ locals }) => {
 		sort: 'dateFrom'
 	});
 
+	const study_groups = await loadAvailableStudyGroups(locals.pb);
+
 	return {
 		userTimeRecords: userTimeRecords,
+		study_groups: study_groups,
 		testForm
 	};
 };
@@ -43,9 +52,10 @@ export const actions = {
 		if (!form.valid) {
 			fail(400, { form });
 		} else {
+			form.data.school = locals.pb.authStore.model.employee_of[0];
+			form.data.teacher = 'cvoh6kqgyy6jjbk';
 			await locals.pb.collection('time_records').create(form.data);
-			message(form, 'Form has been succesfully submitted');
-			throw redirect(303, '/');
+			return message(form, 'Form has been succesfully submitted');
 		}
 
 		return { form };
