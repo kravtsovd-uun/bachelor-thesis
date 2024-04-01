@@ -1,23 +1,38 @@
 <script>
 	import { addDays } from 'date-fns';
-	import { superForm } from 'sveltekit-superforms';
 	import { formatDashboardDate } from '$lib/serviceFunctions.js';
 	import { Paginator } from '@skeletonlabs/skeleton';
 	import TimeRecordCard from '$lib/components/client/dashboard/TimeRecordCard.svelte';
 	import NoDataThumbnail from '$lib/components/client/dashboard/NoDataThumbnail.svelte';
 	import TestModalForm from '$lib/components/client/TestModalForm.svelte';
 
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { superForm } from 'sveltekit-superforms';
 
+	import { getModalStore } from '@skeletonlabs/skeleton';
 	const modalStore = getModalStore();
-	const formModalComponent = { ref: TestModalForm };
+
+	export let data;
+
+	const { form, errors, constraints, message, enhance } = superForm(data.testForm, {
+		resetForm: false
+	});
+
+	const formProps = {
+		form,
+		errors,
+		constraints,
+		message,
+		enhance
+	};
+
+	const formModalComponent = { ref: TestModalForm, props: { formProps: formProps } };
 
 	const testModal = {
 		type: 'component',
 		component: formModalComponent,
 		// Data
-		title: 'Testovací formulář',
-		body: 'Toto je testovací formulář'
+		title: 'Vytvořit novou nabídku',
+		body: 'Vyplňte data a odešlete formulář'
 	};
 
 	function _processDays() {
@@ -34,7 +49,6 @@
 	let processedDaysDuration = _processDays();
 	let daysData = formatDashboardDate(processedDaysDuration);
 
-	export let data;
 	let updatedUserTRData;
 	let isFetchPending = false;
 
@@ -93,8 +107,6 @@
 		month: 'numeric',
 		day: 'numeric'
 	});
-
-	const { form } = superForm(data.testForm);
 </script>
 
 <main class="p-4">
@@ -175,6 +187,9 @@
 							</div>
 						</div>
 					{/each}
+				{/if}
+				{#if data.page === data.totalPages}
+					<NoDataThumbnail isDataLastPage userRole={data?.user.role} />
 				{/if}
 			{/key}
 		</section>
