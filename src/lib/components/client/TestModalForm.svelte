@@ -4,7 +4,7 @@
 	const modalStore = getModalStore();
 
 	export let formProps;
-	export let study_groups = [{ id: '0', name: 'Žádné studijní skupiny' }];
+	export let utrCreateRelationsData;
 
 	const { form, errors, constraints, message, enhance } = formProps;
 </script>
@@ -26,24 +26,26 @@
 					aria-invalid={$errors.group ? true : undefined}
 					{...$constraints.group}
 				>
-					{#each study_groups as { id, name }, i}
+					{#each utrCreateRelationsData.groups as { id, name }, i}
 						<option value={id}>{name}</option>
 					{/each}
 				</select>
 			</label>
 
-			<!-- <label class="label">
-				<span>Group</span>
-				<input
-					class="input"
-					type="text"
-					name="group"
-					aria-invalid={$errors.group ? 'true' : undefined}
-					placeholder="Enter group ID"
-					bind:value={$form.group}
-					{...$constraints.group}
-				/>
-			</label> -->
+            <label class="label">
+				<span>Vyučující</span>
+				<select
+					class="select"
+					bind:value={$form.teacher}
+					name="teacher"
+					aria-invalid={$errors.teacher ? true : undefined}
+					{...$constraints.teacher}
+				>
+					{#each utrCreateRelationsData.teachers as { id, name }, i}
+						<option value={id}>{name}</option>
+					{/each}
+				</select>
+			</label>
 
 			<label class="label">
 				<span>dateFrom</span>

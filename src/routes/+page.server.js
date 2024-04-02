@@ -4,16 +4,24 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
 import { startOfToday } from 'date-fns';
 
-async function loadAvailableStudyGroups(db) {
-	const result = await db
+//Load available study groups and teachers data for logined school account
+async function loadUtrCreateRelationsData(db) {
+	const study_groups = db
 		.collection('study_groups')
-		.getFullList({ skipTotal: true, sorted: 'created', filter: 'active=true', fields: 'id,name' });
-	return result;
+		.getFullList({ sorted: 'created', filter: 'active=true', fields: 'id,name' });
+	const teachers = db.collection('users').getFullList({ sorted: 'created', fields: 'id,name' });
+	const resolve = await Promise.all([study_groups, teachers]);
+
+	return {
+		groups: resolve[0],
+		teachers: resolve[1]
+	};
 }
 
 // Defined outside the load function so the adapter can be cached
 const utrCreateSchema = z.object({
-	group: z.string().regex(/([a-z0-9]{15})+/, 'Must be exactly 15 symbols'),
+	group: z.string().regex(/^([a-z0-9]{15})$/, 'Group ID must be exactly 15 symbols'),
+	teacher: z.string().regex(/^([a-z0-9]{15})$/, 'Teacher ID must be exactly 15 symbols'),
 	dateFrom: z.coerce
 		.date()
 		.min(new Date('2024-01-01'), { message: 'Datum od nemůže být starší 2024-01-01 ' }),
@@ -36,11 +44,11 @@ export const load = async ({ locals }) => {
 		sort: 'dateFrom'
 	});
 
-	const study_groups = await loadAvailableStudyGroups(locals.pb);
+	const utrCreateRelationsData = await loadUtrCreateRelationsData(locals.pb);
 
 	return {
 		userTimeRecords: userTimeRecords,
-		study_groups: study_groups,
+		utrCreateRelationsData: utrCreateRelationsData,
 		testForm
 	};
 };
@@ -53,7 +61,6 @@ export const actions = {
 			fail(400, { form });
 		} else {
 			form.data.school = locals.pb.authStore.model.employee_of[0];
-			form.data.teacher = 'cvoh6kqgyy6jjbk';
 			await locals.pb.collection('time_records').create(form.data);
 			return message(form, 'Form has been succesfully submitted');
 		}

@@ -27,7 +27,7 @@
 
 	const formModalComponent = {
 		ref: TestModalForm,
-		props: { formProps: formProps, study_groups: data?.study_groups }
+		props: { formProps: formProps, utrCreateRelationsData: data?.utrCreateRelationsData }
 	};
 
 	const testModal = {
