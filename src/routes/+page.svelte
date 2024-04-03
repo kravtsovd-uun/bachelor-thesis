@@ -192,7 +192,7 @@
 										room={record.room}
 										date={record.dateFrom}
 										schoolName={record.expand.school.name}
-										teacherName={record.expand.teacher.name}
+										teacherName={record.expand.teacher?.name ?? 'Žádný učitel'}
 										timeFrom={record.dateFrom}
 										timeTo={record.dateTo}
 										notPrimarySchool={data?.user.employee_of[0] !== record.expand.school.id}

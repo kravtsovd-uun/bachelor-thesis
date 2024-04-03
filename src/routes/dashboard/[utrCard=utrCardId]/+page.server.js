@@ -52,6 +52,7 @@ export async function load({ params, locals }) {
 	}
 
 	return {
+		userSchoolId: locals.user.employee_of[0],
 		userRole: locals.user.role,
 		utrDetailUpdateForm: resolve[0],
 		cardData: resolve[1],

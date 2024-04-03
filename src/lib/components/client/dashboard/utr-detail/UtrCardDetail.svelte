@@ -2,6 +2,7 @@
 	import SchoolDetail from './SchoolDetail.svelte';
 
 	export let userRole;
+	export let userSchoolId;
 	export let utrDetailUpdateForm;
 	export let cardData;
 
@@ -18,7 +19,8 @@
 			</p>
 		</div>
 	</aside>
-	{#if userRole === 'school'}
+	<!-- Only for school managers and only for school owned utrCard. Otherwise view as regular user (teacher) -->
+	{#if userRole === 'school' && cardData.expand.school.id === userSchoolId}
 		<SchoolDetail {utrDetailUpdateForm} {cardData} {utrDetailRelationsData} />
 	{/if}
 </section>
