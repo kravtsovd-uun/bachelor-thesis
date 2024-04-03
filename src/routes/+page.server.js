@@ -34,22 +34,28 @@ export const load = async ({ locals }) => {
 	if (!locals.user) {
 		throw redirect(303, '/login');
 	}
-	const testForm = await superValidate(zod(utrCreateSchema));
-
 	const localeTodayStart = startOfToday().toISOString();
-	const userTimeRecords = await locals.pb.collection('time_records').getList(1, 10, {
+
+	const testForm = superValidate(zod(utrCreateSchema));
+
+	const userTimeRecords = locals.pb.collection('time_records').getList(1, 10, {
 		expand: 'teacher, school, group',
 		fields: '*, expand.teacher.name, expand.school.name, expand.school.id, expand.group.*',
 		filter: `dateFrom > '${localeTodayStart}'`,
 		sort: 'dateFrom'
 	});
 
-	const utrCreateRelationsData = await loadUtrCreateRelationsData(locals.pb);
+	const utrCreateRelationsData = loadUtrCreateRelationsData(locals.pb);
 
+	const resolve = await Promise.all([
+		testForm,
+		userTimeRecords,
+		utrCreateRelationsData
+	]);
 	return {
-		userTimeRecords: userTimeRecords,
-		utrCreateRelationsData: utrCreateRelationsData,
-		testForm
+		testForm: resolve[0],
+		userTimeRecords: resolve[1],
+		utrCreateRelationsData: resolve[2]
 	};
 };
 

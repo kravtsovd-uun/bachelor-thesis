@@ -1,6 +1,7 @@
 <script>
 	import { processUserInitials } from '$lib/serviceFunctions.js';
 
+	export let trcID = 'invalid_id';
 	export let groupName = 'Blue Lagoon 02';
 	export let groupStudentCount = 15;
 	export let groupStudentAgeFrom = 16;
@@ -26,8 +27,9 @@
 	}
 </script>
 
-<div
-	class={`card variant-ghost-primary min-w-80 max-w-80 flex-1 ${isPast && 'opacity-40'} ${notPrimarySchool && 'variant-ghost-secondary'} rounded-md shadow-md dark:shadow-none`}
+<a
+	href={`/dashboard/${trcID}`}
+	class={`card variant-ghost-primary card-hover min-w-80 max-w-80 flex-1 ${isPast && 'opacity-40'} ${notPrimarySchool && 'variant-ghost-secondary'} rounded-md shadow-md dark:shadow-none`}
 >
 	<header class="card-header p-2">
 		<div class="flex w-full justify-between">
@@ -57,8 +59,8 @@
 				</div>
 			</div>
 			<div class="flex flex-col gap-2">
-				<div>do {groupStudentCount} osob</div>
-				<div>{groupStudentAgeFrom}-{groupStudentAgeTo ?? '18+'}</div>
+				<div>Počet: do {groupStudentCount} osob</div>
+				<div>Věk: {groupStudentAgeFrom}-{groupStudentAgeTo === 0 ? '18+' : groupStudentAgeTo}</div>
 			</div>
 		</div>
 	</section>
@@ -79,4 +81,4 @@
 			<p class="my-auto font-thin">{room}</p>
 		{/if}
 	</footer>
-</div>
+</a>

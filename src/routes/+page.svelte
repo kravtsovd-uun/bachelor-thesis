@@ -63,6 +63,16 @@
 	};
 
 	$: paginationSettings.size = data.userTimeRecords.totalItems;
+	function checkPaginatorLastPage(pgPage) {
+		return pgPage
+			? pgPage + 1 === data.userTimeRecords.totalPages
+				? true
+				: false
+			: data.userTimeRecords.totalPages === 1
+				? true
+				: false;
+	}
+	let isPaginatorLastPage = checkPaginatorLastPage();
 
 	async function onPageChange(event) {
 		isFetchPending = true;
@@ -70,6 +80,7 @@
 		const result = await response.json();
 
 		updatedUserTRData = result;
+		isPaginatorLastPage = checkPaginatorLastPage(event.detail);
 		isFetchPending = false;
 	}
 
@@ -119,7 +130,7 @@
 			<div
 				class="variant-ghost-success btn-group rounded-md font-bold opacity-50 transition-opacity duration-300 hover:opacity-100"
 			>
-				<button>Vytvořit skupinu</button>
+				<button disabled>Vytvořit skupinu</button>
 				<button on:click={() => modalStore.trigger(testModal)}>Vytvořit nabídku</button>
 			</div>
 		{/if}
@@ -173,6 +184,7 @@
 							<div class="flex flex-wrap gap-6">
 								{#each records as record}
 									<TimeRecordCard
+										trcID={record.id}
 										groupName={record.expand.group.name}
 										groupStudentCount={record.expand.group.max_students_count}
 										groupStudentAgeFrom={record.expand.group.ageFrom}
@@ -191,7 +203,7 @@
 						</div>
 					{/each}
 				{/if}
-				{#if data.page === data.totalPages}
+				{#if !isFetchPending && isPaginatorLastPage}
 					<NoDataThumbnail isDataLastPage userRole={data?.user.role} />
 				{/if}
 			{/key}

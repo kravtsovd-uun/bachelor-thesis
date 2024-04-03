@@ -13,7 +13,7 @@
 			<h2 class="h2">Žádná agenda</h2>
 		{/if}
 		{#if userRole === 'school'}
-			<button type="button" class="variant-ghost-success btn mt-2 font-normal">
+			<button type="button" class="variant-ghost-success btn mt-2 font-normal" disabled>
 				Vytvořit studijní skupinu
 			</button>
 		{:else}

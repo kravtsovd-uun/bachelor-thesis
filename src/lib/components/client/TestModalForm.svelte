@@ -20,7 +20,7 @@
 			<label class="label">
 				<span>Studijní skupina</span>
 				<select
-					class="select"
+					class="select variant-form-material"
 					bind:value={$form.group}
 					name="group"
 					aria-invalid={$errors.group ? true : undefined}
@@ -35,7 +35,7 @@
             <label class="label">
 				<span>Vyučující</span>
 				<select
-					class="select"
+					class="select variant-form-material"
 					bind:value={$form.teacher}
 					name="teacher"
 					aria-invalid={$errors.teacher ? true : undefined}
