@@ -47,7 +47,7 @@
 	export let data;
 </script>
 
-<FormModal />
+<FormModal buttonTextCancel="Zrušit" buttonTextConfirm="Potvrdit" />
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
