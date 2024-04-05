@@ -12,7 +12,8 @@ export const actions = {
 		const formData = await request.formData();
 		const data = Object.fromEntries([...formData]);
 
-		const dataHaveChanged = data.avatar.size > 0 || data.name !== locals.user.name;
+		data.avatar.size === 0 && delete data.avatar; //If only name has changed - keep avatar without changes
+		const dataHaveChanged = data?.avatar?.size > 0 || data.name !== locals.user.name;
 
 		if (dataHaveChanged) {
 			try {
