@@ -172,7 +172,7 @@
 						</div>
 					</section>
 				{:else}
-					{#each Object.entries(updatedGroupedUserTimeRecords ?? groupedUserTimeRecords) as [date, records]}
+					{#each Object.entries(updatedGroupedUserTimeRecords ?? groupedUserTimeRecords) as [date, records], i}
 						<div class="variant-soft-surface flex w-full flex-col space-y-4 rounded-lg p-4">
 							<h2 class="h2">
 								{#if date === today}
@@ -182,7 +182,7 @@
 								{/if}
 							</h2>
 							<div class="flex flex-wrap gap-6">
-								{#each records as record}
+								{#each records as record (record.id)}
 									<TimeRecordCard
 										trcID={record.id}
 										groupName={record.expand.group.name}

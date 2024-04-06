@@ -1,16 +1,37 @@
 import { redirect } from '@sveltejs/kit';
+import { startOfToday } from 'date-fns';
 
 export async function load({ params, locals }) {
 	if (!locals.user) {
 		redirect(303, '/login');
 	}
 
-	const result = await locals.pb.collection('time_records').getList(1, 10, {
-		sorted: 'dateFrom',
+	const localeTodayStart = startOfToday().toISOString();
+
+	const trCards = locals.pb.collection('time_records').getFullList({
 		//isPublic is filtered on the DB side first, but we need to handle a case, when manager of the school views the exchange.
-		filter: `school.id='${params.exchangeId}'&&isPublic=true`,
-		query: {'dashboardRoute': 'false'}
+		filter: `dateFrom>'${localeTodayStart}'&&school.id='${params.exchangeId}'&&isPublic=true`,
+		sort: 'dateFrom',
+		query: { dashboardRoute: 'false' }
+	});
+	const schoolData = locals.pb.collection('schools').getOne(params.exchangeId, {
+		expand: 'responsiblePerson'
 	});
 
-	return { result: result.items };
+	const resolve = await Promise.all([trCards, schoolData]);
+
+	//Obtain school manager user avatar, pass empty value for fallback if image is not set
+	resolve[1].expand.responsiblePerson.avatarSrc = '';
+	if (resolve[1].expand.responsiblePerson.avatar) {
+		const userRecord = resolve[1].expand.responsiblePerson;
+		resolve[1].expand.responsiblePerson.avatarSrc = locals.pb.files.getUrl(
+			userRecord,
+			resolve[1].expand.responsiblePerson.avatar,
+			{
+				thumb: '100x100'
+			}
+		);
+	}
+
+	return { trCards: resolve[0], schoolData: resolve[1] };
 }

@@ -19,7 +19,7 @@
 		</div>
 	</aside>
 	<h1 class="h1">Vaši zaměstnanci</h1>
-	<p class="text-surface-800-100-token mt-4 text-xl max-w-prose">
+	<p class="text-surface-800-100-token mt-4 max-w-prose text-xl">
 		Na této stránce si můžete prohlédnout seznam Vašich zaměstnanců, přidat nového učitele nebo
 		někoho z nich propustit.
 	</p>

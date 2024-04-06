@@ -1,11 +1,114 @@
 <script>
+	import { Accordion, AccordionItem, Avatar } from '@skeletonlabs/skeleton';
+	import { processUserInitials } from '$lib/serviceFunctions.js';
+	import { isPast } from 'date-fns';
+
 	export let data;
+	const { trCards, schoolData } = data;
+	const { email, name, phone, avatarSrc } = schoolData.expand.responsiblePerson;
+
+	const groupedTrCards = trCards.reduce((acc, record) => {
+		const date = new Date(record.dateFrom).toLocaleDateString('cs-CZ', {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'numeric',
+			day: 'numeric'
+		}); //Format time record date
+		if (!acc[date]) {
+			acc[date] = [];
+		}
+		acc[date].push(record);
+		return acc;
+	}, {});
+
+	const today = new Date().toLocaleDateString('cs-CZ', {
+		weekday: 'long',
+		year: 'numeric',
+		month: 'numeric',
+		day: 'numeric'
+	});
 </script>
 
-<h1 class="h1">Burzovní nabídky ...</h1>
-<ul>
-	{#each data.result as item (item.id)}
-		<li>{item.id} - {item.dateFrom}</li>
-	{/each}
-</ul>
-<a href="/exchange" class="btn variant-ghost-surface">Zpět</a>
+<main class="mt-2 px-4">
+	<h1 class="h1">Burzovní nabídky školy {schoolData.name}</h1>
+	<hr class="mt-2" />
+	<div class="variant-ghost-surface mt-6 max-w-prose p-2">
+		<h2 class="h2">Kontakt</h2>
+		<h6 class="h6 mt-2 font-bold">{@html schoolData.address}</h6>
+		<hr class="my-2" />
+		<div class="mt-4 flex justify-between">
+			<div class="flex gap-2">
+				<Avatar src={avatarSrc} initials={processUserInitials(name)} />
+				<div class="text-sm font-thin">
+					<p class="text-lg font-bold">{name}</p>
+					<p>
+						Email: <a
+							href={`mailto:${email}?subject=UUN LMS - Burzovní nabídka Vaši školy`}
+							class="anchor">{email}</a
+						>
+					</p>
+					<p>Tel: <a href={`tel:${phone.replace(/\s+/g, '')}`} class="anchor">{phone}</a></p>
+				</div>
+			</div>
+			<div>
+				<p>ID: 123123123</p>
+			</div>
+		</div>
+	</div>
+
+	<Accordion class="variant-ghost-surface mt-2 max-w-prose">
+		<AccordionItem>
+			<svelte:fragment slot="summary">Nápověda</svelte:fragment>
+			<svelte:fragment slot="content">
+				<blockquote class="blockquote mt-2 bg-surface-300/10">
+					<ul class="list mt-2 space-y-4 py-2">
+						<li>
+							Níže jsou vypsany všechny aktuálně veřejně přístupné nabídky školy {schoolData.name}
+						</li>
+						<li>
+							Pokud se nabídka zobrazuje tady, je stále aktivní a můžete se k ní přihlásit po
+							kontaktování odpovědné osoby školy.
+						</li>
+						<li>
+							Sdělte odpovědné osobě datum a čas požadované nabídky a následně sdělté také své ID
+							uživatele, které naleznete vlevo dole pod informačním blokem kontaktu na školu.
+						</li>
+						<li>
+							Poté budete přiřazení jako vyučující dané rozvrhové akce a následně se RA objeví ve
+							Vaši agendě a bude z burzy stažená.
+						</li>
+						<li>
+							Výše odměny a další administrativní formality jsou plně po předchzozí domluvě s
+							odpovědnou osobou školy.
+						</li>
+					</ul>
+				</blockquote>
+			</svelte:fragment>
+		</AccordionItem>
+	</Accordion>
+
+	<hr class="mt-6" />
+	<div class="mt-8 flex flex-col space-y-12">
+		{#each Object.entries(groupedTrCards) as [date, records], i}
+			<div class="variant-soft-surface flex w-full flex-col space-y-4 rounded-lg p-4">
+				<h2 class="h2">
+					{#if date === today}
+						Dnes <small class="text-sm">({date})</small>
+					{:else}
+						{date}
+					{/if}
+				</h2>
+				<div class="flex flex-wrap gap-6">
+					{#each records as record (record.id)}
+						<div
+							class={`card variant-ghost-surface min-w-80 max-w-80 flex-1 rounded-md shadow-md dark:shadow-none ${isPast(record.dateFrom) && 'opacity-40'}`}
+						>
+							{record.id}
+						</div>
+					{/each}
+				</div>
+			</div>
+		{/each}
+	</div>
+	<a href="/exchange" class="variant-ghost-surface btn">Zpět</a>
+</main>

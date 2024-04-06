@@ -4,12 +4,10 @@ export const load = async ({ locals, parent }) => {
 	if (!locals.user) {
 		throw redirect(303, '/login');
 	}
-	const schoolList = locals.pb
-		.collection('users')
-		.getOne(locals.user.id, {
-			expand: 'employee_of',
-			fields: 'expand.employee_of.id, expand.employee_of.name'
-		});
+	const schoolList = locals.pb.collection('users').getOne(locals.user.id, {
+		expand: 'employee_of',
+		fields: 'expand.employee_of.id, expand.employee_of.name'
+	});
 	const resolve = await Promise.all([schoolList, parent]);
 
 	return {

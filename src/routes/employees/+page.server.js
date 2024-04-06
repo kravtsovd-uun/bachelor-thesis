@@ -8,7 +8,7 @@ export async function load({ locals }) {
 		error(403, { code: 'NOT_ALLOWED' });
 	}
 
-	const employees = locals.pb.collection('users').getFullList({ sorted: 'created' });
+	const employees = locals.pb.collection('users').getFullList({ sort: 'created' });
 	const assigned_groups = locals.pb
 		.collection('study_groups')
 		.getFullList({ fields: 'id,name,responsible' });

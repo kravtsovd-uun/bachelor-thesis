@@ -3,7 +3,7 @@
 	import SuperDebug from 'sveltekit-superforms';
 	import { SlideToggle } from '@skeletonlabs/skeleton';
 	import { convertToDateTimeLocalString } from '$lib/serviceFunctions.js';
-	
+
 	export let cardData;
 	const { updated } = cardData;
 

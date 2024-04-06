@@ -8,8 +8,8 @@ import { startOfToday } from 'date-fns';
 async function loadUtrCreateRelationsData(db) {
 	const study_groups = db
 		.collection('study_groups')
-		.getFullList({ sorted: 'created', filter: 'active=true', fields: 'id,name' });
-	const teachers = db.collection('users').getFullList({ sorted: 'created', fields: 'id,name' });
+		.getFullList({ sort: 'created', filter: 'active=true', fields: 'id,name' });
+	const teachers = db.collection('users').getFullList({ sort: 'created', fields: 'id,name' });
 	const resolve = await Promise.all([study_groups, teachers]);
 
 	return {
@@ -43,7 +43,7 @@ export const load = async ({ locals }) => {
 		fields: '*, expand.teacher.name, expand.school.name, expand.school.id, expand.group.*',
 		filter: `dateFrom > '${localeTodayStart}'`,
 		sort: 'dateFrom',
-		query: { 'dashboardRoute': 'true' }
+		query: { dashboardRoute: 'true' }
 	});
 
 	const utrCreateRelationsData = loadUtrCreateRelationsData(locals.pb);

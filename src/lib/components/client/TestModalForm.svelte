@@ -32,7 +32,7 @@
 				</select>
 			</label>
 
-            <label class="label">
+			<label class="label">
 				<span>Vyučující</span>
 				<select
 					class="select variant-form-material"

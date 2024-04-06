@@ -79,7 +79,7 @@
 						<div class="flex items-center gap-2">
 							<Avatar
 								class="shrink-0"
-								src={school.avatar}
+								src={school.avatarSrc}
 								initials={processUserInitials(school.name)}
 								width="w-12"
 							/>
@@ -88,18 +88,9 @@
 								<p class="text-sm font-thin">{school.city}</p>
 							</div>
 						</div>
-						<span class="variant-filled-success badge size-8 rounded-full opacity-80"
-							>{Math.round(Math.random() * 100)}</span
-						>
 					</header>
-					<div class="card-body text-surface-600-300-token px-4 py-2">
+					<div class="card-body px-4 py-2 text-primary-800 dark:text-primary-400">
 						<h6 class="h6 font-bold">{@html school.address}</h6>
-						<hr class="my-2" />
-						<div class="text-sm font-thin">
-							<p class="font-bold">Dmytro Kravtsov</p>
-							<p>Email: john.doe@example.com</p>
-							<p>Tel: +420 123 123 123</p>
-						</div>
 					</div>
 				</a>
 			{/each}
