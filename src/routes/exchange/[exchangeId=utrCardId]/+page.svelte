@@ -8,3 +8,4 @@
 		<li>{item.id} - {item.dateFrom}</li>
 	{/each}
 </ul>
+<a href="/exchange" class="btn variant-ghost-surface">Zpět</a>

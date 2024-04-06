@@ -47,6 +47,10 @@
 	export let data;
 </script>
 
+<svelte:head>
+	<title>UUN LMS by Kravtsov D.</title>
+</svelte:head>
+
 <FormModal buttonTextCancel="Zrušit" buttonTextConfirm="Potvrdit" />
 <!-- App Shell -->
 <AppShell>
@@ -72,7 +76,7 @@
 	</svelte:fragment>
 	<svelte:fragment slot="sidebarLeft">
 		{#if data?.user}
-			<MainSidebar />
+			<MainSidebar userRole={data?.user.role} />
 		{/if}
 	</svelte:fragment>
 	<!-- Page Route Content -->

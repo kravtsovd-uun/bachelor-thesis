@@ -1,9 +1,11 @@
-import { redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({ locals }) {
 	if (!locals.pb.authStore.isValid) {
 		throw redirect(303, '/login');
+	} else if (locals.user.role !== 'school') {
+		error(403, { code: 'NOT_ALLOWED' });
 	}
 
 	const employees = locals.pb.collection('users').getFullList({ sorted: 'created' });

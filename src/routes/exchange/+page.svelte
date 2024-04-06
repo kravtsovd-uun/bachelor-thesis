@@ -67,7 +67,7 @@
 		<input
 			class="input"
 			type="search"
-			placeholder="Zadejte část názvu školy nebo město..."
+			placeholder="Zadejte část názvu školy nebo města..."
 			on:input={handleSearchSchoolInputChange}
 		/>
 	</label>

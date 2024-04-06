@@ -42,16 +42,13 @@ export const load = async ({ locals }) => {
 		expand: 'teacher, school, group',
 		fields: '*, expand.teacher.name, expand.school.name, expand.school.id, expand.group.*',
 		filter: `dateFrom > '${localeTodayStart}'`,
-		sort: 'dateFrom'
+		sort: 'dateFrom',
+		query: { 'dashboardRoute': 'true' }
 	});
 
 	const utrCreateRelationsData = loadUtrCreateRelationsData(locals.pb);
 
-	const resolve = await Promise.all([
-		testForm,
-		userTimeRecords,
-		utrCreateRelationsData
-	]);
+	const resolve = await Promise.all([testForm, userTimeRecords, utrCreateRelationsData]);
 	return {
 		testForm: resolve[0],
 		userTimeRecords: resolve[1],
