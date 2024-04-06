@@ -63,18 +63,18 @@
 		</AccordionItem>
 	</Accordion>
 	<label class="label">
-		<span>Search</span>
+		<span>Hledat</span>
 		<input
 			class="input"
 			type="search"
-			placeholder="Search..."
+			placeholder="Zadejte část názvu školy nebo město..."
 			on:input={handleSearchSchoolInputChange}
 		/>
 	</label>
 	<div class={`${isSearchUpdatePending && 'blur-sm'} grid grid-cols-4 gap-8 p-4`}>
 		{#if filteredTestItems.length}
 			{#each filteredTestItems as school (school.id)}
-				<a href="#" class="card card-hover">
+				<a href={`/exchange/${school.id}`} class="card card-hover">
 					<header class="card-header flex items-center justify-between">
 						<div class="flex items-center gap-2">
 							<Avatar
