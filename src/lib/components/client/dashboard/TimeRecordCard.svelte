@@ -12,6 +12,8 @@
 	// export let schoolAvatar = '';
 	export let schoolName = 'Jaška';
 	export let teacherName = 'Náhradní učitel';
+	export let teacherAvatar = '';
+	export let schoolAvatar = ''
 	export let userRole = 'teacher';
 	export let timeFrom = '2024-03-30T09:00:00.000Z';
 	export let timeTo = '2024-03-30T10:30:00.000Z';
@@ -25,11 +27,16 @@
 	function formatTRDIssuerOrSolver() {
 		return userRole === 'school' ? teacherName : schoolName;
 	}
+
+	function formatTRDIssuerOrSolverAvatar() {
+		return userRole === 'school' ? teacherAvatar : schoolAvatar;
+	}
 </script>
 
 <a
 	href={`/dashboard/${trcID}`}
-	class={`card variant-ghost-primary card-hover min-w-80 max-w-80 flex-1 ${isPast && 'opacity-40'} ${notPrimarySchool && 'variant-ghost-secondary'} rounded-md shadow-md dark:shadow-none`}
+	class={`card variant-ghost-primary card-hover min-w-80 max-w-80 flex-1 ${isPast && 'opacity-40'} ${notPrimarySchool && 'variant-ghost-secondary'} ${teacherName === 'Žádný učitel' && 'variant-ghost-warning'}
+	rounded-md shadow-md dark:shadow-none`}
 >
 	<header class="card-header p-2">
 		<div class="flex w-full justify-between">
@@ -43,7 +50,9 @@
 					})}
 				</h6>
 			</div>
-
+			{#if teacherName === 'Žádný učitel'}
+				<span class="variant-filled-warning badge self-center">Veřejná</span>
+			{/if}
 			<!-- <Avatar initials="PP" background="bg-surface-400-500-token" width="w-12" class="h-12" /> -->
 		</div>
 	</header>
@@ -68,6 +77,7 @@
 	<footer class="card-footer flex justify-between p-2">
 		<div class="flex items-center gap-2">
 			<Avatar
+				src={formatTRDIssuerOrSolverAvatar()}
 				initials={processUserInitials(formatTRDIssuerOrSolver())}
 				background="bg-surface-400-500-token"
 				width="w-10"

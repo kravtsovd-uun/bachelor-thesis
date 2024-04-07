@@ -56,8 +56,8 @@
 			<svelte:fragment slot="content">
 				<p class="text-lg font-thin italic text-error-400">Info o burze tady.</p>
 				<p>
-					Zobrazují se pouze školy, jenž mají alespoň 1 veřejnou nabídku. Vyhledávání je možné dle
-					jména nebo města. Dostupná města jsou Praha, Brno, Ostrava (momentálně).
+					Vyhledávání je možné dle jména nebo města. Dostupná města jsou Praha, Brno, Ostrava
+					(momentálně).
 				</p>
 			</svelte:fragment>
 		</AccordionItem>

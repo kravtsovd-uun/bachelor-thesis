@@ -12,7 +12,8 @@ export async function load({ params, locals }) {
 		//isPublic is filtered on the DB side first, but we need to handle a case, when manager of the school views the exchange.
 		filter: `dateFrom>'${localeTodayStart}'&&school.id='${params.exchangeId}'&&isPublic=true`,
 		sort: 'dateFrom',
-		query: { dashboardRoute: 'false' }
+		query: { dashboardRoute: 'false' },
+		expand: 'group'
 	});
 	const schoolData = locals.pb.collection('schools').getOne(params.exchangeId, {
 		expand: 'responsiblePerson'
@@ -33,5 +34,5 @@ export async function load({ params, locals }) {
 		);
 	}
 
-	return { trCards: resolve[0], schoolData: resolve[1] };
+	return { userId: locals.user.id, userRole: locals.user.role, trCards: resolve[0], schoolData: resolve[1] };
 }

@@ -3,6 +3,7 @@
 	import { processUserInitials } from '$lib/serviceFunctions.js';
 	import { fade } from 'svelte/transition';
 	export let data;
+	const {schoolList} = data;
 
 	let userDataChanged = false;
 	let avatarFiles = [];
@@ -68,7 +69,7 @@
 			{#if !data?.user?.employee_of.length}
 				<li class="px-2"><h5 class="h5">Nepatří k žádné škole</h5></li>
 			{:else}
-				{#each data?.schoolList as school, i}
+				{#each schoolList as school, i}
 					<li>{school.name}</li>
 				{/each}
 			{/if}

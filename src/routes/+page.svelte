@@ -193,6 +193,8 @@
 										date={record.dateFrom}
 										schoolName={record.expand.school.name}
 										teacherName={record.expand.teacher?.name ?? 'Žádný učitel'}
+										teacherAvatar={record.expand.teacher?.avatarSrc}
+										schoolAvatar={record.expand.school?.avatarSrc}
 										timeFrom={record.dateFrom}
 										timeTo={record.dateTo}
 										notPrimarySchool={data?.user.employee_of[0] !== record.expand.school.id}

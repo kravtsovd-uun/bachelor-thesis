@@ -40,7 +40,8 @@ export const load = async ({ locals }) => {
 
 	const userTimeRecords = locals.pb.collection('time_records').getList(1, 10, {
 		expand: 'teacher, school, group',
-		fields: '*, expand.teacher.name, expand.school.name, expand.school.id, expand.group.*',
+		fields:
+			'*, expand.teacher.id, expand.teacher.collectionId, expand.teacher.name, expand.teacher.avatar, expand.school.avatar, expand.school.collectionId, expand.school.name, expand.school.id, expand.group.*',
 		filter: `dateFrom > '${localeTodayStart}'`,
 		sort: 'dateFrom',
 		query: { dashboardRoute: 'true' }
@@ -49,6 +50,23 @@ export const load = async ({ locals }) => {
 	const utrCreateRelationsData = loadUtrCreateRelationsData(locals.pb);
 
 	const resolve = await Promise.all([testForm, userTimeRecords, utrCreateRelationsData]);
+
+	resolve[1].items.forEach((el) => {
+		if (el.expand.teacher && el.expand.teacher.avatar) {
+			el.expand.teacher.avatarSrc = locals.pb.files.getUrl(
+				el.expand.teacher,
+				el.expand.teacher.avatar,
+				{ thumb: '100x100' }
+			);
+		}
+		if (el.expand.school.avatar) {
+			el.expand.school.avatarSrc = locals.pb.files.getUrl(
+				el.expand.school,
+				el.expand.school.avatar,
+				{ thumb: '100x100' }
+			);
+		}
+	});
 	return {
 		testForm: resolve[0],
 		userTimeRecords: resolve[1],

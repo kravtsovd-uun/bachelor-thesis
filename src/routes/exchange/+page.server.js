@@ -3,6 +3,8 @@ import { error, redirect } from '@sveltejs/kit';
 export async function load({ request, locals }) {
 	if (!locals.pb.authStore.isValid) {
 		throw redirect(303, '/login');
+	} else if (locals.user.role === 'school') {
+		redirect(303, `/exchange/${locals.user.employee_of[0]}`);
 	} else if (locals.user.role === 'teacher') {
 		const employeeData = await locals.pb
 			.collection('users')
