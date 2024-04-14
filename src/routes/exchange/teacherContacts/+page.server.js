@@ -12,7 +12,8 @@ export async function load({ request, locals }) {
 		filter: 'isPublic = true',
 		query: { teacherContacts: 'true' },
 		expand: 'employee_of',
-		fields: 'id,collectionId,email,name,phone,city,avatar,expand.employee_of.id,expand.employee_of.name'
+		fields:
+			'id,collectionId,email,name,phone,city,avatar,expand.employee_of.id,expand.employee_of.name'
 	});
 
 	publicTeachers.forEach((teacher) => {

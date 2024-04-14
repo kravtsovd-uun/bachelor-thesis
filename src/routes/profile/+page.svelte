@@ -3,7 +3,7 @@
 	import { processUserInitials } from '$lib/serviceFunctions.js';
 	import { fade } from 'svelte/transition';
 	export let data;
-	const {schoolList} = data;
+	const { schoolList } = data;
 
 	let userDataChanged = false;
 	let avatarFiles = [];

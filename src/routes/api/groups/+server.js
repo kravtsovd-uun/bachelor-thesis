@@ -1,4 +1,18 @@
 export async function DELETE({ locals, request }) {
+	if (!locals.pb.authStore.isValid || locals.pb.authStore.model.role !== 'school') {
+		return new Response(
+			JSON.stringify({
+				error: true,
+				message: 'This resource is available for authorized school managers only called internally.'
+			}),
+			{
+				status: 403,
+				statusText:
+					'This resource is available for authorized school managers only called internally.'
+			}
+		);
+	}
+
 	const selectedGroupId = await request.json();
 
 	await locals.pb.collection('study_groups').delete(selectedGroupId);
@@ -7,10 +21,17 @@ export async function DELETE({ locals, request }) {
 }
 
 export async function PATCH({ locals, request }) {
-	if (!locals.pb.authStore.isValid) {
+	if (!locals.pb.authStore.isValid || locals.pb.authStore.model.role !== 'school') {
 		return new Response(
-			{ error: true, message: 'This resource is not available for unauthorized calls' },
-			{ status: 403, statusText: 'This resource is not available for unauthorized calls' }
+			JSON.stringify({
+				error: true,
+				message: 'This resource is available for authorized school managers only called internally.'
+			}),
+			{
+				status: 403,
+				statusText:
+					'This resource is available for authorized school managers only called internally.'
+			}
 		);
 	}
 

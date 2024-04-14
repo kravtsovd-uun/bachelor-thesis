@@ -13,7 +13,7 @@
 	export let schoolName = 'Jaška';
 	export let teacherName = 'Náhradní učitel';
 	export let teacherAvatar = '';
-	export let schoolAvatar = ''
+	export let schoolAvatar = '';
 	export let userRole = 'teacher';
 	export let timeFrom = '2024-03-30T09:00:00.000Z';
 	export let timeTo = '2024-03-30T10:30:00.000Z';

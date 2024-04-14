@@ -34,5 +34,10 @@ export async function load({ params, locals }) {
 		);
 	}
 
-	return { userId: locals.user.id, userRole: locals.user.role, trCards: resolve[0], schoolData: resolve[1] };
+	return {
+		userId: locals.user.id,
+		userRole: locals.user.role,
+		trCards: resolve[0],
+		schoolData: resolve[1]
+	};
 }

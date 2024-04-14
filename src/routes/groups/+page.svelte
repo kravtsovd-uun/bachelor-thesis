@@ -1,9 +1,40 @@
 <script>
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import { processUserInitials } from '$lib/serviceFunctions.js';
+	import GroupCreateModalForm from '$lib/components/client/GroupCreateModalForm.svelte';
+
+	import { superForm } from 'sveltekit-superforms';
+
+	import { getModalStore } from '@skeletonlabs/skeleton';
+	const modalStore = getModalStore();
 
 	export let data;
 	const { groups } = data;
+
+	const { form, errors, constraints, message, enhance } = superForm(data.groupCreateForm, {
+		resetForm: false
+	});
+
+	const formProps = {
+		form,
+		errors,
+		constraints,
+		message,
+		enhance
+	};
+
+	const groupCreateFormModalComponent = {
+		ref: GroupCreateModalForm,
+		props: { formProps: formProps, groupCreateRelationsData: data?.groupCreateRelationsData }
+	};
+
+	const groupCreateModal = {
+		type: 'component',
+		component: groupCreateFormModalComponent,
+		// Data
+		title: 'Vytvořit novou studijní skupinu',
+		body: 'Vyplňte data a odešlete formulář'
+	};
 </script>
 
 <main>
@@ -15,7 +46,10 @@
 			class="variant-ghost-surface btn w-32 opacity-60 transition-opacity duration-300 hover:opacity-100"
 			>Archiv</a
 		>
-		<button class="variant-ghost-success btn w-32">Vytvořit</button>
+		<button
+			class="variant-ghost-success btn w-32"
+			on:click={() => modalStore.trigger(groupCreateModal)}>Vytvořit</button
+		>
 	</div>
 	<section class="mt-4 p-4">
 		{#if groups.length !== 0}

@@ -16,14 +16,14 @@
 						href={`/groups/${group.id}`}
 						class={`card card-hover flex min-w-[240px] max-w-sm flex-[1_0_auto] flex-col`}
 					>
-						<header class="card-header flex flex-col mb-4">
+						<header class="card-header mb-4 flex flex-col">
 							<div class="flex justify-between">
 								<h4 class="h4 font-bold">{group.name}</h4>
 							</div>
 							<small class="text-zinc-600 dark:text-zinc-300/60">
 								Vytvořeno: {new Date(group.created).toLocaleString('cs-CZ')}
 							</small>
-                            <p class="text-sky-600 dark:text-sky-300/60">
+							<p class="text-sky-600 dark:text-sky-300/60">
 								Aktualizováno: {new Date(group.updated).toLocaleString('cs-CZ')}
 							</p>
 						</header>
