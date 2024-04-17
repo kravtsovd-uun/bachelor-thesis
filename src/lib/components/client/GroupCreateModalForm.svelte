@@ -1,12 +1,12 @@
 <script>
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { getModalStore, ProgressRadial } from '@skeletonlabs/skeleton';
 	import SuperDebug from 'sveltekit-superforms';
 	const modalStore = getModalStore();
 
 	export let formProps;
 	export let groupCreateRelationsData;
 
-	const { form, errors, constraints, message, enhance } = formProps;
+	const { form, errors, constraints, message, enhance, delayed } = formProps;
 </script>
 
 {#if $modalStore[0]}
@@ -133,6 +133,9 @@
 				<button class="variant-filled-success btn basis-1/3 font-bold" type="submit"
 					>Vytvořit</button
 				>
+				{#if $delayed}
+					<ProgressRadial width="w-10" />
+				{/if}
 			</footer>
 		</form>
 	</div>

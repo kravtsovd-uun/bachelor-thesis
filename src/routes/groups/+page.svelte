@@ -11,8 +11,10 @@
 	export let data;
 	const { groups } = data;
 
-	const { form, errors, constraints, message, enhance } = superForm(data.groupCreateForm, {
-		resetForm: false
+	const { form, errors, constraints, message, enhance, delayed } = superForm(data.groupCreateForm, {
+		resetForm: false,
+		delayMs: 500,
+		timeoutMs: 5000
 	});
 
 	const formProps = {
@@ -20,7 +22,8 @@
 		errors,
 		constraints,
 		message,
-		enhance
+		enhance,
+		delayed
 	};
 
 	const groupCreateFormModalComponent = {

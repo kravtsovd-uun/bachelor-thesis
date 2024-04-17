@@ -34,7 +34,7 @@
 		type: 'component',
 		component: formModalComponent,
 		// Data
-		title: 'Vytvořit novou nabídku',
+		title: 'Vytvořit novou položku agendy',
 		body: 'Vyplňte data a odešlete formulář'
 	};
 
@@ -127,12 +127,10 @@
 	<div class="flex justify-between">
 		<h1 class="text-surface-700-200-token h1 font-bold">Agenda</h1>
 		{#if data?.user.role === 'school'}
-			<div
-				class="variant-ghost-success btn-group rounded-md font-bold opacity-50 transition-opacity duration-300 hover:opacity-100"
+			<button
+				class="variant-ghost-success btn rounded-md font-bold opacity-50 transition-opacity duration-300 hover:opacity-100"
+				on:click={() => modalStore.trigger(testModal)}>Vytvořit</button
 			>
-				<button disabled>Vytvořit skupinu</button>
-				<button on:click={() => modalStore.trigger(testModal)}>Vytvořit nabídku</button>
-			</div>
 		{/if}
 	</div>
 	{#if data?.userTimeRecords.items.length === 0}
