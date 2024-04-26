@@ -58,7 +58,7 @@
 		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase">UUN LMS by Kravtsov D.</strong>
+				<a href="/" class="text-xl uppercase font-bold">UUN LMS by Kravtsov D.</a>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				<LightSwitch />

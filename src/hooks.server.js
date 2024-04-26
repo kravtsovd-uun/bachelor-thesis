@@ -1,7 +1,18 @@
+// import { redirect } from '@sveltejs/kit';
 import PocketBase from 'pocketbase';
 
 export async function handle({ event, resolve }) {
 	event.locals.pb = new PocketBase('https://kravtsov-bachelor-thesis.pockethost.io');
+
+	// let pbConnectAnswer;
+	// try {
+	// 	pbConnectAnswer = await event.locals.pb.health.check();
+	// 	console.log(pbConnectAnswer);
+	// } catch (err) {
+	// 	console.log('PB db connection error: ', err.message);
+	// 	redirect(303, '/dbConnectionError')
+	// }
+
 	event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
 
 	try {

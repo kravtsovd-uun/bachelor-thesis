@@ -21,7 +21,10 @@
 								<h4 class="h4 font-bold">{group.name}</h4>
 							</div>
 							<small class="text-zinc-600 dark:text-zinc-300/60">
-								Vytvořeno: {new Date(group.created).toLocaleString('cs-CZ')}
+								Začátek kurzu: {new Date(group.startDate).toLocaleString('cs-CZ')}
+							</small>
+							<small class="text-zinc-600 dark:text-zinc-300/60">
+								Konec kurzu: {new Date(group.endDate).toLocaleString('cs-CZ')}
 							</small>
 							<p class="text-sky-600 dark:text-sky-300/60">
 								Aktualizováno: {new Date(group.updated).toLocaleString('cs-CZ')}
