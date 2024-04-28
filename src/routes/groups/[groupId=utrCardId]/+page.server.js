@@ -76,7 +76,20 @@ export const actions = {
 		} else {
 			form.data.studyOn = getUniqueDaysOfWeek(form.data.studyOn);
 
-			await locals.pb.collection('study_groups').update(params.groupId, { ...form.data });
+			//oldRecordData for check whenever new record data relational fields updated. If yes - upate all related utr.
+			const resolve = await Promise.all([
+				locals.pb.collection('study_groups').getOne(params.groupId),
+				locals.pb.collection('study_groups').update(params.groupId, { ...form.data })
+			]);
+
+			const oldRecordData = resolve[0];
+			const newRecordData = resolve[1];
+
+			const relData = checkRelationalDataChanged(oldRecordData, newRecordData);
+
+			relData.hasChanged &&
+				(await processRelatedUtrsUpdate(locals.pb, newRecordData, relData.cause));
+
 			message(form, 'The record has been succesfully updated');
 			throw redirect(303, '/groups');
 		}
@@ -96,4 +109,67 @@ function getUniqueDaysOfWeek(stringInput) {
 
 	//Return sorted string array suitable for DB field format.
 	return Array.from(uniqueDayValues);
+}
+
+function checkRelationalDataChanged(oldRecordData, newRecordData) {
+	//TODO: Change to array format, there might be several causes
+	const result = { hasChanged: false, cause: 'none' };
+
+	if (oldRecordData.responsible !== newRecordData.responsible) {
+		result.hasChanged = true;
+		result.cause = 'responsible';
+	} else if (JSON.stringify(oldRecordData.studyOn) !== JSON.stringify(newRecordData.studyOn)) {
+		result.hasChanged = true;
+		result.cause = 'studyOn';
+	} else if (oldRecordData.startDate !== newRecordData.startDate) {
+		result.hasChanged = true;
+		result.cause = 'startDate';
+	} else if (oldRecordData.endDate !== newRecordData.endDate) {
+		result.hasChanged = true;
+		result.cause = 'endDate';
+	}
+
+	return result;
+}
+
+async function processRelatedUtrsUpdate(db, groupNewData, changeSrc) {
+	let groupUtrsData;
+
+	switch (changeSrc) {
+		case 'responsible':
+			groupUtrsData = await db
+				.collection('time_records')
+				.getFullList({ filter: `group='${groupNewData.id}'`, fields: 'id' });
+			processResponsibleChange(db, groupUtrsData, groupNewData.responsible);
+			break;
+
+		case 'studyOn':
+			//TODO: Delete whole group and recreate all utrs again with new provided data
+			break;
+
+		case 'startDate':
+			groupUtrsData = await db
+				.collection('time_records')
+				.getFullList({ filter: `group='${groupNewData.id}'`, fields: 'id,startDate' });
+			break;
+
+		case 'endDate':
+			groupUtrsData = await db
+				.collection('time_records')
+				.getFullList({ filter: `group='${groupNewData.id}'`, fields: 'id,endDate' });
+	}
+}
+
+async function processResponsibleChange(db, utrArray, responsibleId) {
+	if (utrArray.length === 0) return;
+
+	const utrsUpdatePromiseArr = [];
+
+	utrArray.forEach((el) => {
+		utrsUpdatePromiseArr.push(
+			db.collection('time_records').update(el.id, { teacher: responsibleId }, { requestKey: null })
+		);
+	});
+
+	await Promise.all(utrsUpdatePromiseArr);
 }

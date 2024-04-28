@@ -80,6 +80,8 @@
 			? modalStore.trigger(modalUnarchive)
 			: modalStore.trigger(modalArchive);
 	}
+
+	//TODO: Upozornit, ze pri zmene udaju skupiny,  se meni vsechny UTR v jakemkoliv pripade
 </script>
 
 {#if !isDelPending}

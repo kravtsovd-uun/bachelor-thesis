@@ -1,5 +1,6 @@
 <script>
 	import { Avatar } from '@skeletonlabs/skeleton';
+	import { isPast } from 'date-fns';
 	import { processUserInitials } from '$lib/serviceFunctions.js';
 	import GroupCreateModalForm from '$lib/components/client/GroupCreateModalForm.svelte';
 
@@ -70,11 +71,20 @@
 									<span class="variant-filled-error badge">Neaktivní</span>
 								{/if}
 							</div>
-							<small class="text-zinc-600 dark:text-zinc-300/60">
+							<small class="block text-zinc-600 dark:text-zinc-300/60">
 								{#if group.startDate}
 									Začátek: {new Date(group.startDate).toLocaleString('cs-CZ')}
 								{:else}
 									Datum začátku není nastaveno
+								{/if}
+							</small>
+							<small
+								class={`block ${isPast(new Date(group.endDate)) ? 'font-bold text-red-600 dark:text-red-300/60' : 'text-zinc-600 dark:text-zinc-300/60'}`}
+							>
+								{#if group.startDate}
+									Konec: {new Date(group.endDate).toLocaleString('cs-CZ')}
+								{:else}
+									Datum konce není nastaveno
 								{/if}
 							</small>
 							<hr />

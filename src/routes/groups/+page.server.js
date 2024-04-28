@@ -2,6 +2,7 @@ import { error, redirect, fail } from '@sveltejs/kit';
 import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
+import { isAfter, nextDay, addDays, isSameDay, formatISO } from 'date-fns';
 
 async function loadGroupCreateRelationsData(db) {
 	const teachers = await db.collection('users').getFullList({ sort: 'created', fields: 'id,name' });
@@ -93,7 +94,53 @@ export const actions = {
 			form.data.studyOn = getUniqueDaysOfWeek(form.data.studyOn);
 			form.data.active = true;
 
-			await locals.pb.collection('study_groups').create(form.data);
+			const createdGroup = await locals.pb.collection('study_groups').create(form.data);
+
+			const datesArr = calcUtrTimestamps(
+				createdGroup.studyOn,
+				form.data.startDate,
+				form.data.endDate
+			);
+
+			const resultInstanceTimestampsArr = [];
+
+			datesArr.forEach((date) => {
+				const formatStartDate = new Date(date);
+				formatStartDate.setHours(form.data.startDate.getHours());
+				formatStartDate.setMinutes(form.data.startDate.getMinutes());
+
+				const formatEndDate = new Date(date);
+				formatEndDate.setHours(form.data.endDate.getHours());
+				formatEndDate.setMinutes(form.data.endDate.getMinutes());
+
+				const resultStartDate = formatISO(formatStartDate);
+				const resultEndDate = formatISO(formatEndDate);
+
+				resultInstanceTimestampsArr.push({ startDate: resultStartDate, endDate: resultEndDate });
+			});
+
+			const createUtrsPromiseArr = [];
+
+			resultInstanceTimestampsArr.forEach((el) => {
+				const utrData = {
+					school: createdGroup.owner,
+					teacher: createdGroup.responsible,
+					group: createdGroup.id,
+					room: 'testRoom',
+					dateFrom: el.startDate,
+					dateTo: el.endDate
+				};
+
+				const createUtrPromise = locals.pb
+					.collection('time_records')
+					.create(utrData, { requestKey: null }); //requestKey = null enables disable mass request auto cancellation for single batch
+
+				createUtrsPromiseArr.push(createUtrPromise);
+			});
+
+			//Create all user time records in specified range via mass Promise
+			await Promise.all(createUtrsPromiseArr);
+
 			return message(form, 'The record has been succesfully updated');
 			// throw redirect(303, '/groups');
 		}
@@ -113,4 +160,38 @@ function getUniqueDaysOfWeek(stringInput) {
 
 	//Return sorted string array suitable for DB field format.
 	return Array.from(uniqueDayValues);
+}
+
+function calcUtrTimestamps(daySequence, startDate, endDate) {
+	let numbers = daySequence.map((digit) => +digit); //Convert string value to integer with unary + operator.
+	let results = [];
+
+	//handle first day occurance if within studyOn array
+	numbers.forEach((number) => {
+		const searchedDay = nextDay(new Date(addDays(new Date(startDate), -7)), number);
+
+		if (isSameDay(new Date(searchedDay), new Date(startDate))) {
+			results.push(searchedDay.toISOString().slice(0, 10));
+		}
+	});
+
+	numbers.forEach((number) => {
+		processNextOccurences(startDate, endDate, number, results);
+	});
+
+	return results;
+}
+
+function processNextOccurences(startDate, endDate, dayNumber, resultArr) {
+	if (isAfter(new Date(startDate), new Date(endDate))) {
+		return;
+	}
+
+	const nextDayOccurence = nextDay(new Date(startDate), dayNumber);
+
+	//prevent pushing occasionally overflow date
+	!isAfter(new Date(nextDayOccurence), new Date(endDate)) &&
+		resultArr.push(nextDayOccurence.toISOString().slice(0, 10));
+
+	processNextOccurences(addDays(new Date(startDate), 7), endDate, dayNumber, resultArr);
 }

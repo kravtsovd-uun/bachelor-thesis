@@ -51,6 +51,9 @@ export const load = async ({ locals }) => {
 
 	const resolve = await Promise.all([testForm, userTimeRecords, utrCreateRelationsData]);
 
+	//Filter utr only from active and not archived groups
+	resolve[1].items = resolve[1].items.filter((utr) => utr.expand.group.active && !utr.expand.group.archived);
+
 	resolve[1].items.forEach((el) => {
 		if (el.expand.teacher && el.expand.teacher.avatar) {
 			el.expand.teacher.avatarSrc = locals.pb.files.getUrl(
