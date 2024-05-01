@@ -3,6 +3,8 @@ import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
 
+import { nextDay, isSameDay, addDays, isAfter, formatISO } from 'date-fns';
+
 const groupDetailSchema = z.object({
 	responsible: z.string().regex(/^([a-z0-9]{15})$/, 'Responsible ID must be exactly 15 symbols'),
 	name: z
@@ -87,8 +89,7 @@ export const actions = {
 
 			const relData = checkRelationalDataChanged(oldRecordData, newRecordData);
 
-			relData.hasChanged &&
-				(await processRelatedUtrsUpdate(locals.pb, newRecordData, relData.cause));
+			relData !== 0 && (await processRelatedUtrsUpdate(locals.pb, newRecordData, relData));
 
 			message(form, 'The record has been succesfully updated');
 			throw redirect(303, '/groups');
@@ -112,51 +113,48 @@ function getUniqueDaysOfWeek(stringInput) {
 }
 
 function checkRelationalDataChanged(oldRecordData, newRecordData) {
-	//TODO: Change to array format, there might be several causes
-	const result = { hasChanged: false, cause: 'none' };
+	/*
+	0 - Other changes
+	1 - responsible only change. Update existing utrs.
+	2 - other relational data change. Delete and reacreate all utrs.
+	*/
+	let result = 0;
 
-	if (oldRecordData.responsible !== newRecordData.responsible) {
-		result.hasChanged = true;
-		result.cause = 'responsible';
-	} else if (JSON.stringify(oldRecordData.studyOn) !== JSON.stringify(newRecordData.studyOn)) {
-		result.hasChanged = true;
-		result.cause = 'studyOn';
-	} else if (oldRecordData.startDate !== newRecordData.startDate) {
-		result.hasChanged = true;
-		result.cause = 'startDate';
-	} else if (oldRecordData.endDate !== newRecordData.endDate) {
-		result.hasChanged = true;
-		result.cause = 'endDate';
+	if (oldRecordData.responsible !== newRecordData.responsible) result = 1;
+
+	if (JSON.stringify(oldRecordData.studyOn) !== JSON.stringify(newRecordData.studyOn)) {
+		result = 2;
+		return result;
+	}
+
+	if (oldRecordData.startDate !== newRecordData.startDate) {
+		result = 2;
+		return result;
+	}
+
+	if (oldRecordData.endDate !== newRecordData.endDate) {
+		result = 2;
+		return result;
 	}
 
 	return result;
 }
 
-async function processRelatedUtrsUpdate(db, groupNewData, changeSrc) {
+async function processRelatedUtrsUpdate(db, groupNewData, changeIdx) {
 	let groupUtrsData;
 
-	switch (changeSrc) {
-		case 'responsible':
+	switch (changeIdx) {
+		case 1:
 			groupUtrsData = await db
 				.collection('time_records')
 				.getFullList({ filter: `group='${groupNewData.id}'`, fields: 'id' });
 			processResponsibleChange(db, groupUtrsData, groupNewData.responsible);
 			break;
 
-		case 'studyOn':
-			//TODO: Delete whole group and recreate all utrs again with new provided data
-			break;
-
-		case 'startDate':
-			groupUtrsData = await db
-				.collection('time_records')
-				.getFullList({ filter: `group='${groupNewData.id}'`, fields: 'id,startDate' });
-			break;
-
-		case 'endDate':
-			groupUtrsData = await db
-				.collection('time_records')
-				.getFullList({ filter: `group='${groupNewData.id}'`, fields: 'id,endDate' });
+		case 2:
+			//Delete whole group with utr db cascade deletion and recreate all utrs again with newly provided data
+			deleteGroupUtrs(db, groupNewData.id);
+			recreateGroupAndUtrs(db, groupNewData);
 	}
 }
 
@@ -172,4 +170,90 @@ async function processResponsibleChange(db, utrArray, responsibleId) {
 	});
 
 	await Promise.all(utrsUpdatePromiseArr);
+}
+
+async function deleteGroupUtrs(db, groupId) {
+	await db.collection('study_groups').delete(groupId);
+}
+
+async function recreateGroupAndUtrs(db, groupData) {
+	delete groupData.id; //ID in db will be regenerated.
+
+	const createdGroup = await db.collection('study_groups').create(groupData);
+
+	const datesArr = calcUtrTimestamps(
+		createdGroup.studyOn,
+		createdGroup.startDate,
+		createdGroup.endDate
+	);
+
+	const resultInstanceTimestampsArr = [];
+
+	datesArr.forEach((date) => {
+		const formatStartDate = new Date(date);
+		formatStartDate.setHours(new Date(createdGroup.startDate).getHours());
+		formatStartDate.setMinutes(new Date(createdGroup.startDate).getMinutes());
+
+		const formatEndDate = new Date(date);
+		formatEndDate.setHours(new Date(createdGroup.endDate).getHours());
+		formatEndDate.setMinutes(new Date(createdGroup.endDate).getMinutes());
+
+		const resultStartDate = formatISO(formatStartDate);
+		const resultEndDate = formatISO(formatEndDate);
+
+		resultInstanceTimestampsArr.push({ startDate: resultStartDate, endDate: resultEndDate });
+	});
+
+	const createUtrsPromiseArr = [];
+
+	resultInstanceTimestampsArr.forEach((el) => {
+		const utrData = {
+			school: createdGroup.owner,
+			teacher: createdGroup.responsible,
+			group: createdGroup.id,
+			room: 'testRoom',
+			dateFrom: el.startDate,
+			dateTo: el.endDate
+		};
+
+		const createUtrPromise = db.collection('time_records').create(utrData, { requestKey: null }); //requestKey = null enables disable mass request auto cancellation for single batch
+
+		createUtrsPromiseArr.push(createUtrPromise);
+	});
+	//Create all user time records in specified range via mass Promise
+	await Promise.all(createUtrsPromiseArr);
+}
+
+function calcUtrTimestamps(daySequence, startDate, endDate) {
+	let numbers = daySequence.map((digit) => +digit); //Convert string value to integer with unary + operator.
+	let results = [];
+
+	//handle first day occurance if within studyOn array
+	numbers.forEach((number) => {
+		const searchedDay = nextDay(new Date(addDays(new Date(startDate), -7)), number);
+
+		if (isSameDay(new Date(searchedDay), new Date(startDate))) {
+			results.push(searchedDay.toISOString().slice(0, 10));
+		}
+	});
+
+	numbers.forEach((number) => {
+		processNextOccurences(startDate, endDate, number, results);
+	});
+
+	return results;
+}
+
+function processNextOccurences(startDate, endDate, dayNumber, resultArr) {
+	if (isAfter(new Date(startDate), new Date(endDate))) {
+		return;
+	}
+
+	const nextDayOccurence = nextDay(new Date(startDate), dayNumber);
+
+	//prevent pushing occasionally overflow date
+	!isAfter(new Date(nextDayOccurence), new Date(endDate)) &&
+		resultArr.push(nextDayOccurence.toISOString().slice(0, 10));
+
+	processNextOccurences(addDays(new Date(startDate), 7), endDate, dayNumber, resultArr);
 }

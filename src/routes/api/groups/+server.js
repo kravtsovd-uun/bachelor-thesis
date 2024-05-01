@@ -38,9 +38,7 @@ export async function PATCH({ locals, request }) {
 	const res = await request.json();
 
 	res.archive
-		? await locals.pb
-				.collection('study_groups')
-				.update(res.id, { archived: true, active: false })
+		? await locals.pb.collection('study_groups').update(res.id, { archived: true, active: false })
 		: await locals.pb.collection('study_groups').update(res.id, { archived: false });
 
 	return new Response(String('Group has been succesfully updated'));
