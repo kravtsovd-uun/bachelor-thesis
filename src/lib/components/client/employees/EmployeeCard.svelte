@@ -19,7 +19,7 @@
 			if (r) {
 				await fetch(`/api/employees`, {
 					method: 'PATCH',
-					body: JSON.stringify(employee.id),
+					body: JSON.stringify({ uid: employee.id, gids: employee.assigned_groups }),
 					headers: { 'content-type': 'application/json' }
 				}).then(() => (isFired = true));
 			}
@@ -29,7 +29,7 @@
 
 {#if !isFired}
 	<div
-		class="card variant-ghost-surface flex flex-col justify-between space-y-4 rounded-md"
+		class="card variant-ghost-surface flex min-w-[320px] flex-col justify-between space-y-4 rounded-md"
 		transition:fade={{ duration: 1000 }}
 	>
 		<header class="card-header flex items-end gap-2">
@@ -39,14 +39,12 @@
 		<div class="card-body flex-1 px-4">
 			<p class="text-surface-800-100-token text-lg italic">Přiřazené skupiny</p>
 			{#if employee.assigned_groups.length > 0}
-				<ul
-					class="scrollbar-hide list max-h-32 cursor-not-allowed space-y-2 overflow-y-auto opacity-50"
-				>
+				<ul class="scrollbar-hide list max-h-32 space-y-2 overflow-y-auto">
 					{#each employee.assigned_groups as ag (ag.id)}
 						<li>
 							<a
-								href={`/studyGroups/${ag.id}`}
-								class="bg-primary-300-600-token pointer-events-none w-full rounded-md p-1 text-center font-light"
+								href={`/groups/${ag.id}`}
+								class="bg-primary-300-600-token w-full rounded-md p-1 text-center font-light"
 								>{ag.name}</a
 							>
 						</li>
@@ -61,7 +59,6 @@
 		<footer class="card-footer">
 			<button
 				class="variant-ghost-error btn w-full font-bold"
-				disabled
 				on:click={() => modalStore.trigger(modal)}>Propustit</button
 			>
 		</footer>
