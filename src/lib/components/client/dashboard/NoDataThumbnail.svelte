@@ -13,9 +13,9 @@
 			<h2 class="h2">Žádná agenda</h2>
 		{/if}
 		{#if userRole === 'school'}
-			<button type="button" class="variant-ghost-success btn mt-2 font-normal" disabled>
-				Vytvořit studijní skupinu
-			</button>
+			<h4 class="h4 mt-2 font-normal">
+				Vytvořte novou studijní skupinu nebo samostatnou výukovou akci.
+			</h4>
 		{:else}
 			<h4 class="h4 mt-2 font-normal">
 				Obraťte se na odpovědného zástupce své školy nebo si zkuste vyhledat nabídky na burze.

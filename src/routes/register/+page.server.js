@@ -12,7 +12,8 @@ export const actions = {
 	register: async ({ locals, request }) => {
 		const formData = await request.formData();
 		const data = Object.fromEntries([...formData]);
-
+		data.emailVisibility = true;
+		
 		try {
 			data.role = 'teacher';
 			await locals.pb.collection('users').create(data);

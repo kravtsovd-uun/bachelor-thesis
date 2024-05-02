@@ -32,9 +32,13 @@
 		class="card variant-ghost-surface flex min-w-[320px] flex-col justify-between space-y-4 rounded-md"
 		transition:fade={{ duration: 1000 }}
 	>
-		<header class="card-header flex items-end gap-2">
-			<Avatar src={employee.avatarSrc} initials={processUserInitials(employee.name)} width="w-12" />
-			<h4 class="text-surface-800-100-token h4 font-bold">{employee.name}</h4>
+		<header class="card-header flex items-center gap-2">
+			<Avatar src={employee.avatarSrc} initials={processUserInitials(employee.name)} width="w-16" />
+			<div class="flex flex-col">
+				<h4 class="text-surface-800-100-token h4 font-bold">{employee.name}</h4>
+				<small>{employee.email}</small>
+				<small>{employee.phone !== '' ? employee.phone : 'Telefon neuveden'}</small>
+			</div>
 		</header>
 		<div class="card-body flex-1 px-4">
 			<p class="text-surface-800-100-token text-lg italic">Přiřazené skupiny</p>

@@ -1,21 +1,27 @@
 export async function PATCH({ request, locals }) {
-	const { uid, gids } = await request.json();
+	const { uid, gids, addTeacher } = await request.json();
 
-	const promiseArr = [];
+	if (addTeacher) {
+		await locals.pb.collection('users').update(uid, { 'employee_of+': locals.user.employee_of[0] });
 
-	promiseArr.push(
-		locals.pb.collection('users').update(uid, { 'employee_of-': locals.user.employee_of[0] })
-	);
+		return new Response(String('User has been succesfully added'));
+	} else {
+		const promiseArr = [];
 
-	gids.forEach((el) => {
 		promiseArr.push(
-			locals.pb
-				.collection('study_groups')
-				.update(el.id, { responsible: '', active: false }, { requestKey: null })
+			locals.pb.collection('users').update(uid, { 'employee_of-': locals.user.employee_of[0] })
 		);
-	});
 
-	await Promise.all(promiseArr);
+		gids.forEach((el) => {
+			promiseArr.push(
+				locals.pb
+					.collection('study_groups')
+					.update(el.id, { responsible: '', active: false }, { requestKey: null })
+			);
+		});
 
-	return new Response(String('User has been succesfully deleted'));
+		await Promise.all(promiseArr);
+
+		return new Response(String('User has been succesfully deleted'));
+	}
 }
