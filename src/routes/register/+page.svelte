@@ -10,25 +10,25 @@
 	<div class="mt-6 w-full max-w-sm rounded-lg bg-primary-50 py-6 shadow-md">
 		<form method="POST" action="?/register" class="flex w-full flex-col items-center space-y-2">
 			<div class="form-control w-full max-w-xs">
-				<label for="name" class="label pb-1 font-medium">
+				<label for="name" class="label pb-1 font-medium text-black">
 					<span class="label-text">Jméno</span>
 				</label>
 				<input type="text" name="name" class="input-bordered input w-full max-w-xs" />
 			</div>
 			<div class="form-control w-full max-w-xs">
-				<label for="email" class="label pb-1 font-medium">
+				<label for="email" class="label pb-1 font-medium text-black">
 					<span class="label-text">Email</span>
 				</label>
 				<input type="email" name="email" class="input-bordered input w-full max-w-xs" />
 			</div>
 			<div class="form-control w-full max-w-xs">
-				<label for="password" class="label pb-1 font-medium">
+				<label for="password" class="label pb-1 font-medium text-black">
 					<span class="label-text">Heslo</span>
 				</label>
 				<input type="password" name="password" class="input-bordered input w-full max-w-xs" />
 			</div>
 			<div class="form-control w-full max-w-xs">
-				<label for="passwordConfirm" class="label pb-1 font-medium">
+				<label for="passwordConfirm" class="label pb-1 font-medium text-black">
 					<span class="label-text">Potvrzení hesla</span>
 				</label>
 				<input
@@ -46,8 +46,7 @@
 		<h3 class="h3 font-bold text-primary-900">Pozor</h3>
 		<hr class="my-2" />
 		<p class="text-primary-800">
-			Tento systém vyžaduje uživatelský účet učitele, který Vám bude vytvořen a přidělen Vaši
-			školou. Kontaktujte svého odpovědného zástupce podpory.
+			Pro registraci účtu školy kontaktujte prosím správce systému
 		</p>
 	</div>
 </div>

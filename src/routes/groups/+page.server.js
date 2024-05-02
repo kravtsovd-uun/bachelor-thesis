@@ -20,8 +20,7 @@ const groupCreateSchema = z.object({
 		.regex(
 			/^[a-zA-Z0-9\s]{6,32}$/,
 			'Jméno může obsahovat pouze latinská písmena a číslice. Min. délka 6 symbolů. Max. délka 32 symbolů.'
-		)
-		.default('Nová skupina'),
+		),
 	studyOn: z
 		.string()
 		.regex(
@@ -30,8 +29,8 @@ const groupCreateSchema = z.object({
 		)
 		.default('1,2,3,4,5'),
 	max_students_count: z.number().int().positive().safe().default(15),
-	ageFrom: z.number().int().positive().safe().default(6),
-	ageTo: z.number().int().positive().safe().default(0),
+	ageFrom: z.number().int().positive().safe().default(12),
+	ageTo: z.number().int().positive().safe().default(18),
 	startDate: z.coerce
 		.date()
 		.min(new Date('2024-01-01'), { message: 'Datum od nemůže být starší 2024-01-01 ' }),
@@ -141,8 +140,7 @@ export const actions = {
 			//Create all user time records in specified range via mass Promise
 			await Promise.all(createUtrsPromiseArr);
 
-			return message(form, 'The record has been succesfully updated');
-			// throw redirect(303, '/groups');
+			return message(form, 'Skupina byla úspěšně vytvořena');
 		}
 
 		return { form };

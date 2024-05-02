@@ -1,6 +1,5 @@
 <script>
 	import { getModalStore, ProgressRadial } from '@skeletonlabs/skeleton';
-	import SuperDebug from 'sveltekit-superforms';
 	const modalStore = getModalStore();
 
 	export let formProps;
@@ -11,7 +10,6 @@
 
 {#if $modalStore[0]}
 	<div class="card w-modal space-y-4 p-4 shadow-xl">
-		<SuperDebug data={$form} />
 		{#if $message}<h4 class="h4">{$message}</h4>{/if}
 		{#if Object.keys($errors).length > 0}<pre>{JSON.stringify($errors)}</pre>{/if}
 		<header class="text-2xl font-bold">{$modalStore[0].title ?? '(Žádný název)'}</header>
@@ -28,6 +26,7 @@
 					class="input variant-form-material"
 					name="name"
 					type="text"
+					placeholder="Zadejte název skupiny (Bez diakritiky, max 32 symbolů)"
 					aria-invalid={$errors.name ? 'true' : undefined}
 					bind:value={$form.name}
 					{...$constraints.name}

@@ -6,7 +6,7 @@ export const load = async ({ locals, parent }) => {
 	}
 	const schoolList = locals.pb.collection('users').getOne(locals.user.id, {
 		expand: 'employee_of',
-		fields: 'expand.employee_of.id, expand.employee_of.name'
+		fields: 'expand.employee_of.id, expand.employee_of.name, expand.employee_of.restrictTeachers'
 	});
 	const resolve = await Promise.all([schoolList, parent]);
 

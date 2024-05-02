@@ -1,17 +1,16 @@
 <script>
-	import { getModalStore } from '@skeletonlabs/skeleton';
-	import SuperDebug from 'sveltekit-superforms';
+	import { getModalStore, ProgressRadial } from '@skeletonlabs/skeleton';
+
 	const modalStore = getModalStore();
 
 	export let formProps;
 	export let utrCreateRelationsData;
 
-	const { form, errors, constraints, message, enhance } = formProps;
+	const { form, errors, constraints, message, enhance, delayed } = formProps;
 </script>
 
 {#if $modalStore[0]}
 	<div class="card w-modal space-y-4 p-4 shadow-xl">
-		<SuperDebug data={$form} />
 		{#if $message}<h4 class="h4">{$message}</h4>{/if}
 		{#if Object.keys($errors).length > 0}<pre>{JSON.stringify($errors)}</pre>{/if}
 		<header class="text-2xl font-bold">{$modalStore[0].title ?? '(Žádný název)'}</header>
@@ -48,7 +47,7 @@
 			</label>
 
 			<label class="label">
-				<span>dateFrom</span>
+				<span>Začátek</span>
 				<input
 					class="input"
 					type="datetime-local"
@@ -60,7 +59,7 @@
 			</label>
 
 			<label class="label">
-				<span>dateTo</span>
+				<span>Konec</span>
 				<input
 					class="input"
 					type="datetime-local"
@@ -77,6 +76,9 @@
 				<button class="variant-filled-success btn basis-1/3 font-bold" type="submit"
 					>Vytvořit</button
 				>
+				{#if $delayed}
+					<ProgressRadial width="w-10" />
+				{/if}
 			</footer>
 		</form>
 	</div>

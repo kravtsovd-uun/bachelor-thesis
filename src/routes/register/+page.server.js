@@ -13,6 +13,9 @@ export const actions = {
 		const formData = await request.formData();
 		const data = Object.fromEntries([...formData]);
 		data.emailVisibility = true;
+		data.phone = '+420 123 123 123';
+		const cities = ['Praha', 'Brno', 'Ostrava'];
+		data.city = cities[Math.round(Math.random() * 2)];
 		
 		try {
 			data.role = 'teacher';

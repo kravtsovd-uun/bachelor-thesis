@@ -1,13 +1,32 @@
 <script>
-	import { Avatar, FileButton } from '@skeletonlabs/skeleton';
+	import { Avatar, FileButton, SlideToggle } from '@skeletonlabs/skeleton';
 	import { processUserInitials } from '$lib/serviceFunctions.js';
 	import { fade } from 'svelte/transition';
 	export let data;
 	const { schoolList } = data;
 
 	let userDataChanged = false;
+	let toggleStatus =
+		data?.user.role === 'school' ? !schoolList[0].restrictTeachers : data?.user.isPublic;
+
 	let avatarFiles = [];
 	$: avatarSrc = avatarFiles.length > 0 ? URL.createObjectURL(avatarFiles[0]) : '';
+
+	async function handleTr(event) {
+		const req = await fetch(`/api/profile`, {
+			method: 'PATCH',
+			body: JSON.stringify({ uid: schoolList[0].id, status: event.target.checked }),
+			headers: { 'content-type': 'application/json' }
+		});
+	}
+
+	async function handleIsPublic(event) {
+		const req = await fetch(`/api/profile`, {
+			method: 'PATCH',
+			body: JSON.stringify({ uid: data?.user.id, status: event.target.checked }),
+			headers: { 'content-type': 'application/json' }
+		});
+	}
 </script>
 
 <main class="flex gap-32 p-4">
@@ -74,5 +93,22 @@
 				{/each}
 			{/if}
 		</ul>
+		{#if data?.user?.role === 'school'}
+			<SlideToggle
+				class="mt-4"
+				checked={toggleStatus}
+				on:change={handleTr}
+				size="sm"
+				active="bg-success-400 dark:bg-success-700">Přístup učitelů k burze</SlideToggle
+			>
+		{:else}
+			<SlideToggle
+				class="mt-4"
+				checked={toggleStatus}
+				on:change={handleIsPublic}
+				size="sm"
+				active="bg-success-400 dark:bg-success-700">Viditelnost veřejně</SlideToggle
+			>
+		{/if}
 	</section>
 </main>

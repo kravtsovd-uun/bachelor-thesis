@@ -1,10 +1,15 @@
 <script>
 	import { superForm } from 'sveltekit-superforms';
+	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { goto } from '$app/navigation';
 
 	import { SlideToggle } from '@skeletonlabs/skeleton';
 	import { convertToDateTimeLocalString } from '$lib/serviceFunctions.js';
 
 	export let cardData;
+
+	const modalStore = getModalStore();
+
 	const { updated } = cardData;
 
 	export let utrDetailUpdateForm;
@@ -19,6 +24,27 @@
 	$form.isPublic = cardData.isPublic;
 
 	export let utrDetailRelationsData;
+
+	const deleteModal = {
+		type: 'confirm',
+
+		title: 'Potvrzení o smazání položky agendy',
+		body: `Opravdu si přejete tuto položku agendy smazat?`,
+		response: async (r) => {
+			if (r) {
+				await fetch(`/api/dashboard/fetch-time-records`, {
+					method: 'DELETE',
+					body: JSON.stringify({ utrId: cardData.id }),
+					headers: { 'content-type': 'application/json' }
+				});
+				goto('/');
+			}
+		}
+	};
+
+	function handleUtrDelete() {
+		modalStore.trigger(deleteModal);
+	}
 </script>
 
 <div class="my-12">
@@ -99,10 +125,11 @@
 
 		<p>Naposledy aktualizováno: <span>{new Date(updated).toLocaleString('cs-CZ')}</span></p>
 
-		<footer>
-			<a href="/" class="variant-ghost-error btn">Storno</a>
-			<button class="variant-filled-success btn" type="submit">Aktualizovat</button>
+		<footer class="space-x-4">
+			<a href="/" class="variant-ghost-surface btn">Storno</a>
+			<button class="variant-filled-success btn w-64" type="submit">Aktualizovat</button>
 		</footer>
 		<!-- Ucitel, skupina, mistnost, datum Od, datum Do, Verejna (burza), Aktualizovano -->
 	</form>
+	<button class="variant-filled-error btn mt-2 w-96" on:click={handleUtrDelete}>Smazat</button>
 </div>

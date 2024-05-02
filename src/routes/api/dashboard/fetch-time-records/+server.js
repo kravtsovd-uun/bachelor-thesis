@@ -15,3 +15,11 @@ export async function GET({ url, locals }) {
 
 	return json(res);
 }
+
+export async function DELETE({ request, locals }) {
+	const { utrId } = await request.json();
+
+	await locals.pb.collection('time_records').delete(utrId);
+
+	return new Response(String('UTR has been succesfully deleted'));
+}

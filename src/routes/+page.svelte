@@ -13,7 +13,7 @@
 
 	export let data;
 
-	const { form, errors, constraints, message, enhance } = superForm(data.testForm, {
+	const { form, errors, constraints, message, enhance, delayed } = superForm(data.testForm, {
 		resetForm: false
 	});
 
@@ -22,7 +22,8 @@
 		errors,
 		constraints,
 		message,
-		enhance
+		enhance,
+		delayed
 	};
 
 	const formModalComponent = {
@@ -59,7 +60,7 @@
 		page: data.userTimeRecords.page - 1,
 		limit: data.userTimeRecords.perPage,
 		size: data.userTimeRecords.totalItems,
-		amounts: [10, 20, 50]
+		amounts: [10]
 	};
 
 	$: paginationSettings.size = data.userTimeRecords.totalItems;

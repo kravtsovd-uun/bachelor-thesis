@@ -88,7 +88,7 @@ export const actions = {
 		} else {
 			form.data.school = locals.pb.authStore.model.employee_of[0];
 			await locals.pb.collection('time_records').create(form.data);
-			return message(form, 'Form has been succesfully submitted');
+			return message(form, 'Položka byla úspěšně vytvořena');
 		}
 
 		return { form };
