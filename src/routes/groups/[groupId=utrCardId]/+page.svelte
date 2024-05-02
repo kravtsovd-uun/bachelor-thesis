@@ -16,7 +16,7 @@
 	});
 
 	$form.name = name;
-	$form.responsible = groupDetail?.expand.responsible.id ?? 'Žádný učitel';
+	$form.responsible = groupDetail?.expand?.responsible.id ?? -1;
 	$form.studyOn = groupDetail.studyOn;
 	$form.max_students_count = groupDetail.max_students_count;
 	$form.ageFrom = groupDetail.ageFrom;
@@ -80,8 +80,6 @@
 			? modalStore.trigger(modalUnarchive)
 			: modalStore.trigger(modalArchive);
 	}
-
-	//TODO: Upozornit, ze pri zmene udaju skupiny,  se meni vsechny UTR v jakemkoliv pripade
 </script>
 
 {#if !isDelPending}
@@ -201,6 +199,7 @@
 
 			<SlideToggle
 				name="active"
+				disabled={$form.responsible === -1}
 				bind:checked={$form.active}
 				size="sm"
 				active="bg-success-400 dark:bg-success-700">Aktivní</SlideToggle

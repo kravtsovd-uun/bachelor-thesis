@@ -142,7 +142,7 @@
 				settings={paginationSettings}
 				showNumerals
 				maxNumerals={3}
-				class="mt-4 max-w-xs"
+				class="mt-4 max-w-sm"
 				on:page={onPageChange}
 				disabled={isFetchPending}
 			/>

@@ -64,11 +64,15 @@ export const actions = {
 	utrCardUpdate: async ({ request, locals, params }) => {
 		const form = await superValidate(request, zod(utrDetailSchema));
 
+		if (form.data.isPublic) {
+			form.data.teacher = '';
+		}
+
 		if (!form.valid) {
 			fail(400, { form });
 		} else {
 			await locals.pb.collection('time_records').update(params.utrCard, { ...form.data });
-			return message(form, 'The record has been succesfully updated');
+			return message(form, 'Položka byla úspěšně aktualizována');
 		}
 
 		return { form };

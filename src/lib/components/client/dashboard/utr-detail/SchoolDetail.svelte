@@ -1,6 +1,6 @@
 <script>
 	import { superForm } from 'sveltekit-superforms';
-	import SuperDebug from 'sveltekit-superforms';
+
 	import { SlideToggle } from '@skeletonlabs/skeleton';
 	import { convertToDateTimeLocalString } from '$lib/serviceFunctions.js';
 
@@ -12,16 +12,16 @@
 		resetForm: false
 	});
 
-	$form.teacher = cardData.expand.teacher.id;
+	$form.teacher = cardData.expand?.teacher?.id ?? -1;
 	$form.group = cardData.expand.group.id;
 	$form.dateFrom = convertToDateTimeLocalString(new Date(cardData.dateFrom));
 	$form.dateTo = convertToDateTimeLocalString(new Date(cardData.dateTo));
+	$form.isPublic = cardData.isPublic;
 
 	export let utrDetailRelationsData;
 </script>
 
 <div class="my-12">
-	<SuperDebug data={$form} />
 	{#if $message}<h4 class="h4">{$message}</h4>{/if}
 	<form
 		method="POST"

@@ -3,9 +3,29 @@
 	import { processUserInitials } from '$lib/serviceFunctions.js';
 	import { isPast } from 'date-fns';
 
+	import SearchTeacherIdModalForm from '$lib/components/client/SearchTeacherIdModalForm.svelte';
+
+	import { getModalStore } from '@skeletonlabs/skeleton';
+
 	export let data;
+
 	const { trCards, schoolData } = data;
 	const { email, name, phone, avatarSrc } = schoolData.expand.responsiblePerson;
+
+	const modalStore = getModalStore();
+
+	const insertIdFormModalComponent = {
+		ref: SearchTeacherIdModalForm,
+		props: { exchangeAdd: true, utrId: "" }
+	};
+
+	const insertIdModal = {
+		type: 'component',
+		component: insertIdFormModalComponent,
+		// Data
+		title: 'Přidání učitele',
+		body: 'Vložte ID hledaného vyučujícího. <br/>Tento údaj by Vám pracovník měl sdělit při Vašem s ním kontaktování.'
+	};
 
 	const groupedTrCards = trCards.reduce((acc, record) => {
 		const date = new Date(record.dateFrom).toLocaleDateString('cs-CZ', {
@@ -148,6 +168,17 @@
 												: record.expand.group.ageTo}
 										</div>
 									</div>
+									{#if data.userRole === 'school'}
+										<button
+											class="variant-ghost-warning btn my-4"
+											on:mouseenter={() => {
+												insertIdFormModalComponent.props.utrId = record.id;
+											}}
+											on:click={() => {
+												modalStore.trigger(insertIdModal);
+											}}>Přiřadit externího učitele</button
+										>
+									{/if}
 								</div>
 							</div>
 						{/each}

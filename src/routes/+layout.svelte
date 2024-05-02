@@ -1,6 +1,6 @@
 <script>
 	import '../app.postcss';
-	import { AppShell, AppBar, Avatar, LightSwitch } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Avatar } from '@skeletonlabs/skeleton';
 
 	//Dynamic progress bar above the page during page load
 	import 'nprogress/nprogress.css';
@@ -61,7 +61,6 @@
 				<a href="/" class="text-xl font-bold uppercase">UUN LMS by Kravtsov D.</a>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				<LightSwitch />
 				{#if data?.user}
 					<Avatar
 						initials={processUserInitials(data?.user?.name)}

@@ -6,13 +6,7 @@
 	export let data;
 	const { schoolList } = data;
 	let searchSchoolInputValue = '';
-	const testItems = [
-		{ id: 1, name: 'apple' },
-		{ id: 2, name: 'banana' },
-		{ id: 3, name: 'strawberry' },
-		{ id: 4, name: 'apricot' },
-		{ id: 5, name: 'banquet' }
-	];
+	
 	let filteredTestItems = [...schoolList];
 	$: isSearchUpdatePending = timeout && true;
 	let timeout;
